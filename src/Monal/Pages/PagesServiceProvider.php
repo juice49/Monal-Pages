@@ -1,4 +1,5 @@
-<?php namespace Monal\Pages;
+<?php
+namespace Monal\Pages;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -7,38 +8,56 @@ class PagesServiceProvider extends ServiceProvider {
 	/**
 	 * Indicates if loading of the provider is deferred.
 	 *
-	 * @var bool
+	 * @var		Boolean
 	 */
 	protected $defer = false;
 
 	/**
 	 * Bootstrap the application events.
 	 *
-	 * @return void
+	 * @return	Void
 	 */
 	public function boot()
 	{
 		$this->package('monal/pages');
+
+		$routes = __DIR__.'/../../routes.php';
+		if (file_exists($routes)){
+			include $routes;
+		}
+
+		\Monal::registerMenuOption('Pages', 'Pages', 'pages', 'pages');
+		\Monal::registerMenuOption('Pages', 'Page Types', 'page-types', 'page-types');
 	}
 
 	/**
 	 * Register the service provider.
 	 *
-	 * @return void
+	 * @return	Void
 	 */
 	public function register()
 	{
-		//
+		$this->app->bind(
+			'Monal\Pages\Models\PageType',
+			function () {
+				return new \Monal\Pages\Models\MonalPageType;
+			}
+		);
+		$this->app->bind(
+			'Monal\Pages\Repositories\PageTypesRepository',
+			function () {
+				return new \Monal\Pages\Repositories\MonalPageTypesRepository;
+			}
+		);
 	}
 
 	/**
 	 * Get the services provided by the provider.
 	 *
-	 * @return array
+	 * @return	Array
 	 */
 	public function provides()
 	{
 		return array();
 	}
-
 }
