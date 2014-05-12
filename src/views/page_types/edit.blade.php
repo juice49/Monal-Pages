@@ -4,7 +4,7 @@
 	<script src="{{ URL::to('packages/monal/data/js/components.js') }}"></script>
 @stop
 @section('body-header')
-	<h1 class="color--teal">Create Page Type</h1>
+	<h1 class="color--teal">Edit Page Type</h1>
 @stop
 @section('body-content')
 
@@ -36,7 +36,7 @@
 			<div class="control_block">
 				{{ Form::label('template', 'Template', array('class' => 'label--block')) }}
 				<div class="select__default">
-					{{ Form::select('template', $templates, $page_type->template(), array('class' => 'select')) }}
+					{{ Form::select('template', $templates, Input::has('template') ? Input::get('template') : $page_type->template(), array('class' => 'select')) }}
 				</div>
 			</div>
 		</div>
@@ -56,7 +56,7 @@
 				<a href="{{ URL::route('admin.page-types') }}" class="button button--mustard">Cancel</a>
 			</div>
 			<div class="form__controls__right align--right">
-				{{ Form::submit('Create', array('class' => 'button button--wasabi')) }}
+				{{ Form::submit('Update', array('class' => 'button button--wasabi')) }}
 			</div>
 		</div>
 	{{ Form::close() }}

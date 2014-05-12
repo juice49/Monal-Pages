@@ -73,30 +73,30 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 			'component' => 'required|not_in:0',
 		);
 		$validation_messages = array(
-			'name.required' => 'You need to give this data set a Name.',
-			'name.max' => 'The Name for this data set is too long. It must be no more than 100 characters long.',
-			'name.page_type_data_set_template_name' => 'The Name for this data set is invalid. It can only contain letters, numbers, underscores, hyphens and spaces, and must contain at least 1 letter.',
-			'component.required' => 'You need to set a Component Type for this data set.',
-			'component.not_in' => 'You need to set a Component Type for this data set.',
+			'name.required' => 'You need to give this data set a name.',
+			'name.max' => 'The name for this data set is too long. It must be no more than 100 characters long.',
+			'name.page_type_data_set_template_name' => 'The name for this data set is invalid. It can only contain letters, numbers, underscores, hyphens and spaces, and must contain at least 1 letter.',
+			'component.required' => 'You need to set a component type for this data set.',
+			'component.not_in' => 'You need to set a component type for this data set.',
 		);
 		$data_set_template_names = array();
 		foreach ($this->data_set_templates as $data_set_template) {
 			if (isset($data_set_template_names[\Str::slug($data_set_template->name())])) {
-				$stream_validates = false;
+				$templates_validate = false;
 				$this->messages->add(
 					array(
 						'error' => array(
-							'You can’t have two data sets with the same Name.',
+							'You can’t have two data sets with the same name.',
 						)
 					)
 				);
 			}
-			$data_set_template_names[\Str::slug($data_set_template->name())] = \Str::slug($data_set_template->name());
+			$data_set_template_names[\Str::slug($data_set_template->name())] = $data_set_template->name();
 			if (!$data_set_template->validates($validation_rules, $validation_messages)) {
 				$this->messages->add(
 					array(
 						'error' => array(
-							'There are some errors in the Data Sets you have used.',
+							'There are some errors in the data sets you have used.',
 						)
 					)
 				);

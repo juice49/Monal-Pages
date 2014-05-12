@@ -68,7 +68,7 @@ class PageTypesController extends AdminController
 				$page_type->addDataSetTemplate($data_set_template);
 			}
 			if ($this->page_types_repo->validatesForStorage($page_type)) {
-				if (\StreamSchema::build($page_type)) {
+				if (StreamSchema::build($page_type)) {
 					$this->page_types_repo->write($page_type);
 					$this->system->messages->add(
 						array(
@@ -85,5 +85,56 @@ class PageTypesController extends AdminController
 		$templates = Theme::templates();
 		$messages = $this->system->messages->get();
 		return View::make('pages::page_types.create', compact('messages', 'templates', 'page_type'));
+	}
+
+	/**
+	 * Controller for HTTP/S requests for the Pages package’s edit page
+	 * type admin page. Mediates the requests and outputs a response.
+	 *
+	 * @return	Illuminate\View\View / Illuminate\Http\RedirectResponse
+	 */
+	public function edit($id)
+	{
+		if (!$this->system->user->hasAdminPermissions('page_types', 'edit_page_type')) {
+			return Redirect::route('admin.page-types');
+		}
+		if ($page_type = $this->page_types_repo->retrieve($id)) {
+			if ($this->input) {
+				$from = clone $page_type;
+				$page_type->setName(isset($this->input['name']) ? $this->input['name'] : null);
+				$page_type->setTablePrefix(isset($this->input['table_prefix']) ? $this->input['table_prefix'] : null);
+				$page_type->discardDataSetTemplates();
+				$data_set_templates = \DataSetTemplatesHelper::extractDataSetTemplatesFromInput($this->input);
+				foreach ($data_set_templates as $data_set_template) {
+					$page_type->addDataSetTemplate($data_set_template);
+				}
+				if ($this->page_types_repo->validatesForStorage($page_type)) {
+					if (StreamSchema::update($from, $page_type)) {
+						$this->page_types_repo->write($page_type);
+						$this->system->messages->add(
+							array(
+								'success' => array(
+									'You successfully updated the page type "' . $page_type->name() . '".',
+								)
+							)
+						)->flash();
+						return Redirect::route('admin.page-types');
+					}
+					$this->system->messages->add(
+						array(
+							'error' => array(
+								'There was an error making these updates.',
+							)
+						)
+					);
+				} else {
+					$this->system->messages->add($this->page_types_repo->messages()->toArray());
+				}
+			}
+			$templates = Theme::templates();
+			$messages = $this->system->messages->get();
+			return View::make('pages::page_types.edit', compact('messages', 'templates', 'page_type'));
+		}
+		return Redirect::route('admin.page-types');
 	}
 }

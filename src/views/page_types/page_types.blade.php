@@ -49,7 +49,7 @@
 						</table>
 						<div class="node__y--top align--right">
 							@if($system_user->hasAdminPermissions('page_types', 'edit_page_types'))
-								<a href="{{ URL::route('admin.page-types', $page_type->ID()) }}" class="button button--small button--dusk">Edit</a>
+								<a href="{{ URL::route('admin.page-types.edit', $page_type->ID()) }}" class="button button--small button--dusk">Edit</a>
 							@endif
 							@if($system_user->hasAdminPermissions('page_types', 'delete_page_types'))
 								<span class="button button--small button--cuban_heat">Delete</span>
