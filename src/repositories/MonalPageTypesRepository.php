@@ -84,12 +84,12 @@ class MonalPageTypesRepository implements PageTypesRepository
 		);
 		$validation_messages = array(
 			'name.required' => 'You need to give this page type a Name.',
-			'name.max' => 'The Name for this page type is too long. It must be no more than 100 characters long.',
-			'name.page_type_name' => 'The Name for this page type is invalid. It can only contain letters, numbers, underscores, hyphens and spaces, and must contain at least 1 letter.',
+			'name.max' => 'Your Name for this page type is too long. It must be no more than 100 characters long.',
+			'name.page_type_name' => 'Your Name for this page type is invalid. It can only contain letters, numbers, underscores, hyphens and spaces, and must contain at least 1 letter.',
 			'name.unique' => 'There is already a page type using this Name. Please choose a different one',
-			'table_prefix.table_prefix' => 'The Table Prefix for this page type is invalid. It can only contain letters, underscores and hypens, and must contain at least one letter.',
+			'table_prefix.table_prefix' => 'Your Table Prefix for this page type is invalid. It can only contain letters, underscores and hypens, and must contain at least one letter.',
 			'template.required' => 'You need to set a Template for this page type.',
-			'template.max' => 'The Template for this page type is too long. It must be no more than 100 characters long.',
+			'template.max' => 'Your name for the Template for this page type is too long. It must be no more than 100 characters long.',
 		);
 		if ($page_type->validates($validation_rules, $validation_messages)) {
 			return true;
@@ -190,11 +190,13 @@ class MonalPageTypesRepository implements PageTypesRepository
 			$encoded = $this->encodeForStorage($page_type);
 			if ($page_type->ID()) {
 				$encoded['updated_at'] = date('Y-m-d H:i:s');
+				\StreamSchema::update($this->retrieve($page_type->ID()), $page_type);
 				\DB::table($this->table)->where('id', '=', $page_type->ID())->update($encoded);
 				return true;
 			} else {
 				$encoded['created_at'] = date('Y-m-d H:i:s');
 				$encoded['updated_at'] = date('Y-m-d H:i:s');
+				\StreamSchema::build($page_type);
 				\DB::table($this->table)->insert($encoded);
 				return true;
 			}

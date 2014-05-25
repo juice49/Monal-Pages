@@ -42,6 +42,25 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 	}
 
 	/**
+	 * Generate a new page model based on the page type.
+	 *
+	 * @return	Monal\Pages\Models\MonalPage
+	 */
+	public function newPageFromType()
+	{
+		$page = \App::make('Monal\Pages\Models\Page');
+		$page->setPageType($this);
+		foreach ($this->dataSetTemplates() as $data_set_template) {
+			$data_set = \App::make('Monal\Data\Models\DataSet');
+			$data_set->setName($data_set_template->name());
+			$data_set->setComponent($data_set_template->componentURI());
+			$data_set->setComponentSettings($data_set_template->componentSettings());
+			$page->addDataSet($data_set);
+		}
+		return $page;
+	}
+
+	/**
 	 * Check the page type validates against a set of given rules.
 	 *
 	 * @param	Array
@@ -107,13 +126,33 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 	}
 
 	/**
-	 * Return the page type's interface.
+	 * Return a GUI for the model.
 	 *
-	 * @param	Boolean
+	 * @param	Array
 	 * @return	Illuminate\View\View
 	 */
-	public function view($show_validation_messages = false)
+	public function view(array $settings = array())
 	{
-		
+		$page_type = array(
+			'name' => $this->name,
+			'table_prefix' => $this->table_prefix,
+			'template' => $this->template,
+		);
+		$templates = \Theme::templates();
+		$data_set_temaplates = $this->data_set_templates;
+		$show_data_sets_validation = isset($settings['show_data_sets_validation']) ? $settings['show_data_sets_validation'] : false;
+		$create_button = isset($settings['save_button']) ? $settings['save_button'] : 'Save';
+		$messages = $this->messages();
+		return \View::make(
+			'pages::models.page_type',
+			compact(
+				'messages',
+				'page_type',
+				'templates',
+				'data_set_temaplates',
+				'create_button',
+				'show_data_sets_validation'
+			)
+		);
 	}
 }

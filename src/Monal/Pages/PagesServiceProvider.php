@@ -44,11 +44,35 @@ class PagesServiceProvider extends ServiceProvider {
 			}
 		);
 		$this->app->bind(
+			'Monal\Pages\Models\Page',
+			function () {
+				return new \Monal\Pages\Models\MonalPage;
+			}
+		);
+		$this->app->bind(
+			'Monal\Pages\Repositories\PagesRepository',
+			function () {
+				return new \Monal\Pages\Repositories\MonalPagesRepository;
+			}
+		);
+		$this->app->bind(
 			'Monal\Pages\Repositories\PageTypesRepository',
 			function () {
 				return new \Monal\Pages\Repositories\MonalPageTypesRepository;
 			}
 		);
+
+		// Register Facades
+		$this->app['pageshelper'] = $this->app->share(
+			function ($app) {
+				return new \Monal\Pages\Libraries\PagesHelper;
+			}
+		);
+		$this->app->booting(
+			function () {
+			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+			$loader->alias('PagesHelper', 'Monal\Pages\Facades\PagesHelper');
+		});
 	}
 
 	/**
