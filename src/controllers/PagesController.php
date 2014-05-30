@@ -17,14 +17,14 @@ class PagesController extends AdminController
 	/**
 	 * The Pages repository. 
 	 *
-	 * @var		  Monal\Pages\Repositories\PagesRepository
+	 * @var		Monal\Pages\Repositories\PagesRepository
 	 */
 	protected $pages_repo;
 
 	/**
 	 * The Page Types repository. 
 	 *
-	 * @var		  Monal\Pages\Repositories\PageTypesRepository
+	 * @var		Monal\Pages\Repositories\PageTypesRepository
 	 */
 	protected $page_types_repo;
 

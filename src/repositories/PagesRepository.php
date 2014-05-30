@@ -38,6 +38,14 @@ interface PagesRepository
 	public function validatesForStorage(Page $page);
 
 	/**
+	 * Return an array summarising the details of each page and organised
+	 * by page hierarchy.
+	 *
+	 * @return	Array
+	 */
+	public function getPagesTree();
+
+	/**
 	 * Retrieve an instance/s from the repository.
 	 *
 	 * @param	Integer
@@ -46,12 +54,27 @@ interface PagesRepository
 	public function retrieve($key = null);
 
 	/**
-	 * Return an array summarising the details of each page and organised
-	 * by page hierarchy.
+	 * Retrieve the home page from the repository.
 	 *
-	 * @return	Array
+	 * @return	Monal\Pages\Models\Page
 	 */
-	public function pageHierarchySummary();
+	public function retrieveHomePage();
+
+	/**
+	 * Retrieve a page from the repository by its URL.
+	 *
+	 * @param	String
+	 * @return	Monal\Pages\Models\Page
+	 */
+	public function retrieveByURL($url);
+
+	/**
+	 * Retrieve all child pages of a given page.
+	 *
+	 * @param	Integer
+	 * @return	Illuminate\Database\Eloquent\Collection
+	 */
+	public function retrieveChildren($id);
 
 	/**
 	 * Write a Pages model to the repository.

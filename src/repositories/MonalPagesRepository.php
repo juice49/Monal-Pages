@@ -172,31 +172,24 @@ class MonalPagesRepository implements PagesRepository
 		$page->setTitle($results->title);
 		$page->setKeywords($results->keywords);
 		$page->setDescription($results->description);
-		return $page;
-	}
 
-	/**
-	 * Retrieve an instance/s from the repository.
-	 *
-	 * @param	Integer
-	 * @return	Illuminate\Database\Eloquent\Collection / Monal\Pages\Models\Page
-	 */
-	public function retrieve($key = null)
-	{
-		$query = \DB::table($this->table)->select('*');
-		if (!$key) {
-			$results = $query->get();
-			$pages = \App::make('Illuminate\Database\Eloquent\Collection');
-			foreach ($results as &$result) {
-				$pages->add($this->decodeFromStorage($result));
-			}
-			return $pages;
-		} else {
-			if ($result = $query->find($key)) {
-				return $this->decodeFromStorage($result);
+		$i = 0;
+		$page_data_sets = \StreamSchema::getEntires($page_type, $results->id);
+		if (!empty($page_data_sets)) {
+			$page_data_sets = $page_data_sets[0];
+			unset($page_data_sets->id);
+			unset($page_data_sets->rel);
+			unset($page_data_sets->created_at);
+			unset($page_data_sets->updated_at);
+			foreach ($page_data_sets as $key => $value) {
+				$components = \App::make('Monal\Data\Libraries\ComponentsInterface');
+				$dressed_values = $components->make($page->dataSets()[$i]->componentURI())
+									->dressImplementationValues($value);
+				$page->dataSets()[$i]->setComponentValues($dressed_values);
+				$i++;
 			}
 		}
-		return false;
+		return $page;
 	}
 
 	/**
@@ -205,7 +198,7 @@ class MonalPagesRepository implements PagesRepository
 	 *
 	 * @return	Array
 	 */
-	public function pageHierarchySummary()
+	public function getPagesTree()
 	{
 		$flat_page_map = array();
 		foreach ($this->retrieve() as $page) {
@@ -254,6 +247,72 @@ class MonalPagesRepository implements PagesRepository
 			}
 		}
 		return $tree_branch;
+	}
+
+	/**
+	 * Retrieve an instance/s from the repository.
+	 *
+	 * @param	Integer
+	 * @return	Illuminate\Database\Eloquent\Collection / Monal\Pages\Models\Page
+	 */
+	public function retrieve($key = null)
+	{
+		$query = \DB::table($this->table)->select('*');
+		if (!$key) {
+			$results = $query->get();
+			$pages = \App::make('Illuminate\Database\Eloquent\Collection');
+			foreach ($results as &$result) {
+				$pages->add($this->decodeFromStorage($result));
+			}
+			return $pages;
+		} else {
+			if ($result = $query->find($key)) {
+				return $this->decodeFromStorage($result);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieve the home page from the repository.
+	 *
+	 * @return	Monal\Pages\Models\Page
+	 */
+	public function retrieveHomePage()
+	{
+		if ($page = $this->query()->where('is_home', '=', 1)->first()) {
+			return $this->decodeFromStorage($page);
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieve a page from the repository by its URL.
+	 *
+	 * @param	String
+	 * @return	Monal\Pages\Models\Page
+	 */
+	public function retrieveByURL($url)
+	{
+		if ($page = $this->query()->where('url', '=', $url)->first()) {
+			return $this->decodeFromStorage($page);
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieve all child pages of a given page.
+	 *
+	 * @param	Integer
+	 * @return	Illuminate\Database\Eloquent\Collection
+	 */
+	public function retrieveChildren($id)
+	{
+		$pages = \App::make('Illuminate\Database\Eloquent\Collection');
+		foreach ($this->query()->where('parent', '=', $id)->get() as $child) {
+			$pages->add($this->decodeFromStorage($child));
+		}
+		return $pages;
 	}
 
 	/**

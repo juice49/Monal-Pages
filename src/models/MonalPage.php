@@ -16,7 +16,7 @@ class MonalPage implements Page
 	/**
 	 * The page's messages.
 	 *
-	 * @var		 Monal\Core\Contracts\MessagesInterface
+	 * @var		Monal\Core\Contracts\MessagesInterface
 	 */
 	protected $messages;
 

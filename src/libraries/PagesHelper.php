@@ -8,6 +8,8 @@ namespace Monal\Pages\Libraries;
  * @author	Arran Jacques
  */
 
+use Monal\Pages\Models\Page;
+
 class PagesHelper
 {
 	/**
@@ -60,7 +62,7 @@ class PagesHelper
 	public function pagesHierarchyForSelect()
 	{
 		$select_array = array();
-		foreach ($this->pages_repo->pageHierarchySummary() as $page) {
+		foreach ($this->pages_repo->getPagesTree() as $page) {
 			$select_array[$page['id']] =  $page['name'];
 			if (!empty($page['children'])) {
 				$select_array = $select_array + $this->recurseIntoChildren($page['children'], 1);

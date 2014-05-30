@@ -28,6 +28,25 @@ class PagesServiceProvider extends ServiceProvider {
 
 		\Monal::registerMenuOption('Pages', 'Pages', 'pages', 'pages');
 		\Monal::registerMenuOption('Pages', 'Page Types', 'page-types', 'page-types');
+
+		\Monal::registerFrontendRouteLogic(function($url_segments) {
+			$pages_repo = \App::make('Monal\Pages\Repositories\PagesRepository');
+			if (empty($url_segments)) {
+				if ($page = $pages_repo->retrieveHomePage()) {
+					$controller = new \FrontendPagesController(\Monal::instance());
+					return $controller->page($page);
+				}
+			} else {
+				$url = '';
+				foreach ($url_segments as $segment) {
+					$url .= '/' . $segment;
+				}
+				if ($page = $pages_repo->retrieveByURL($url)) {
+					$controller = new \FrontendPagesController(\Monal::instance());
+					return $controller->page($page);
+				}
+			}
+		});
 	}
 
 	/**
@@ -47,6 +66,12 @@ class PagesServiceProvider extends ServiceProvider {
 			'Monal\Pages\Models\Page',
 			function () {
 				return new \Monal\Pages\Models\MonalPage;
+			}
+		);
+		$this->app->bind(
+			'Monal\Pages\Models\FrontendPage',
+			function ($app, $parameters) {
+				return new \Monal\Pages\Models\MonalFrontendPage($parameters);
 			}
 		);
 		$this->app->bind(
