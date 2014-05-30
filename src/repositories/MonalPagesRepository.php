@@ -193,6 +193,31 @@ class MonalPagesRepository implements PagesRepository
 	}
 
 	/**
+	 * Return an array containing the details of all pages stored in the
+	 * repository
+	 *
+	 * @return	Array
+	 */
+	public function getEntryLog()
+	{
+		$flat_page_map = array();
+		foreach ($this->retrieve() as $page) {
+			array_push($flat_page_map, array(
+				'id' => $page->ID(),
+				'page_type' => ($page->pageType() instanceof PageType) ? $page->pageType()->ID() : null,
+				'name' => $page->name(),
+				'parent' => $page->parent(),
+				'slug' => $page->slug(),
+				'url' => $page->URL(),
+				'title' => $page->title(),
+				'description' => $page->description(),
+				'keywords' => $page->keywords(),
+			));
+		}
+		return $flat_page_map;
+	}
+
+	/**
 	 * Return an array summarising the details of each page and organised
 	 * by page hierarchy.
 	 *

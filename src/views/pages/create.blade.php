@@ -13,7 +13,7 @@
 
 	{{ $page->view(array(
 		'show_data_sets_validation' => true,
-		'page_hierarchy' => PagesHelper::pagesHierarchyForSelect(),
+		'page_hierarchy' => PagesHelper::createPageListForSelect(),
 		'save_button' => 'Create'
 	)) }}
 

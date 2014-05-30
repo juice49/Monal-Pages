@@ -74,13 +74,13 @@ class PagesServiceProvider extends ServiceProvider {
 				return new \Monal\Pages\Models\MonalFrontendPage($parameters);
 			}
 		);
-		$this->app->bind(
+		$this->app->singleton(
 			'Monal\Pages\Repositories\PagesRepository',
 			function () {
 				return new \Monal\Pages\Repositories\MonalPagesRepository;
 			}
 		);
-		$this->app->bind(
+		$this->app->singleton(
 			'Monal\Pages\Repositories\PageTypesRepository',
 			function () {
 				return new \Monal\Pages\Repositories\MonalPageTypesRepository;
@@ -97,6 +97,17 @@ class PagesServiceProvider extends ServiceProvider {
 			function () {
 			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
 			$loader->alias('PagesHelper', 'Monal\Pages\Facades\PagesHelper');
+		});
+
+		$this->app['pagesrepository'] = $this->app->share(
+			function ($app) {
+				return \App::make('Monal\Pages\Repositories\PagesRepository');
+			}
+		);
+		$this->app->booting(
+			function () {
+			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+			$loader->alias('PagesRepository', 'Monal\Pages\Facades\PagesRepository');
 		});
 	}
 

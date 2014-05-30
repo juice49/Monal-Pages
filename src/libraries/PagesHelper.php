@@ -30,36 +30,12 @@ class PagesHelper
 	}
 
 	/**
-	 * Return a flat array containing summaries of each page.
-	 *
-	 * @return	Void
-	 */
-	public function pagesSummary()
-	{
-		$flat_page_map = array();
-		foreach ($this->pages_repo->retrieve() as $page) {
-			array_push($flat_page_map, array(
-				'id' => $page->ID(),
-				'page_type' => ($page->pageType() instanceof PageType) ? $page->pageType()->ID() : null,
-				'name' => $page->name(),
-				'parent' => $page->parent(),
-				'slug' => $page->slug(),
-				'url' => $page->URL(),
-				'title' => $page->title(),
-				'description' => $page->description(),
-				'keywords' => $page->keywords(),
-			));
-		}
-		return $flat_page_map;
-	}
-
-	/**
 	 * Return a flat array of pages the depicts page hierarchy and can be
-	 * used to build form selects to choose parent pages.
+	 * used to build form selects.
 	 *
 	 * @return	Array
 	 */
-	public function pagesHierarchyForSelect()
+	public function createPageListForSelect()
 	{
 		$select_array = array();
 		foreach ($this->pages_repo->getPagesTree() as $page) {

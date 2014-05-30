@@ -79,7 +79,7 @@
 
 		var parent_page_url_map = {}
 
-		@foreach (PagesHelper::pagesSummary() as $page)
+		@foreach (PagesRepository::getEntryLog() as $page)
 			parent_page_url_map['{{ $page['id'] }}'] = '{{ $page['url'] }}';
 		@endforeach
 

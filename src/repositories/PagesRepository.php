@@ -38,6 +38,14 @@ interface PagesRepository
 	public function validatesForStorage(Page $page);
 
 	/**
+	 * Return an array containing the details of all pages stored in the
+	 * repository
+	 *
+	 * @return	Array
+	 */
+	public function getEntryLog();
+
+	/**
 	 * Return an array summarising the details of each page and organised
 	 * by page hierarchy.
 	 *
