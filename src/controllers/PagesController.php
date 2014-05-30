@@ -9,41 +9,17 @@
  */
 
 use Monal\GatewayInterface;
-use Monal\Pages\Repositories\PagesRepository;
-use Monal\Pages\Repositories\PageTypesRepository;
 
 class PagesController extends AdminController
 {
 	/**
-	 * The Pages repository. 
-	 *
-	 * @var		Monal\Pages\Repositories\PagesRepository
-	 */
-	protected $pages_repo;
-
-	/**
-	 * The Page Types repository. 
-	 *
-	 * @var		Monal\Pages\Repositories\PageTypesRepository
-	 */
-	protected $page_types_repo;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param	Monal\GatewayInterface
-	 * @param	Monal\Pages\Repositories\PagesRepository
-	 * @param	Monal\Pages\Repositories\PageTypesRepository
 	 * @return	Void
 	 */
-	public function __construct(
-		GatewayInterface $system_gateway,
-		PagesRepository $pages_repo,
-		PageTypesRepository $page_types_repo
-	) {
+	public function __construct(GatewayInterface $system_gateway) {
 		parent::__construct($system_gateway);
-		$this->pages_repo = $pages_repo;
-		$this->page_types_repo = $page_types_repo;
 	}
 
 	/**
@@ -89,7 +65,7 @@ class PagesController extends AdminController
 			$this->system->messages->add($validation->messages()->toArray());
 		}
 		$page_types = array(0 => 'Choose page type...');
-		foreach ($this->page_types_repo->retrieve() as $page_type) {
+		foreach (PageTypesRepository::retrieve() as $page_type) {
 			$page_types[$page_type->ID()] = $page_type->name();
 		}
 		$messages = $this->system->messages->get();
@@ -108,7 +84,7 @@ class PagesController extends AdminController
 		if (!$this->system->user->hasAdminPermissions('pages', 'create_page_type')) {
 			return Redirect::route('admin.pages');
 		}
-		if ($page_type = $this->page_types_repo->retrieve($id)) {
+		if ($page_type = PageTypesRepository::retrieve($id)) {
 			$page = $page_type->newPageFromType();
 			if ($this->input) {
 				foreach (\DataSetsHelper::extractDataSetValuesFromInput($this->input) as $key => $data_set_values) {
@@ -121,7 +97,7 @@ class PagesController extends AdminController
 				$page->setTitle(isset($this->input['title']) ? $this->input['title'] : null);
 				$page->setKeywords(isset($this->input['keywords']) ? $this->input['keywords'] : null);
 				$page->setDescription(isset($this->input['description']) ? $this->input['description'] : null);
-				if ($this->pages_repo->write($page)) {
+				if (PagesRepository::write($page)) {
 					$this->system->messages->add(
 						array(
 							'success' => array(

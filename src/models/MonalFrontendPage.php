@@ -13,13 +13,6 @@ use Monal\Pages\Models\Page;
 class MonalFrontendPage implements FrontendPage
 {
 	/**
-	 * The Pages repository. 
-	 *
-	 * @var		Monal\Pages\Repositories\PagesRepository
-	 */
-	protected $pages_repo = null;
-
-	/**
 	 * The page's ID.
 	 *
 	 * @var		Integer
@@ -76,8 +69,6 @@ class MonalFrontendPage implements FrontendPage
 	 */
 	public function __construct(Page $page)
 	{
-		$this->pages_repo = \App::make('Monal\Pages\Repositories\PagesRepository');
-
 		$this->id = $page->ID();
 		$this->name = $page->name();
 		$this->url = \URL::to($page->URL());
@@ -144,7 +135,7 @@ class MonalFrontendPage implements FrontendPage
 	{
 		if ($this->parent_id) {
 			if (is_null($this->parent)) {
-				$parent = $this->pages_repo->retrieve($this->parent_id);
+				$parent = \PagesRepository::retrieve($this->parent_id);
 				$this->parent = \App::make('Monal\Pages\Models\FrontendPage', $parent);
 			}
 		}
@@ -160,7 +151,7 @@ class MonalFrontendPage implements FrontendPage
 	{
 		if (is_null($this->children)) {
 			$this->children = \App::make('Illuminate\Database\Eloquent\Collection');
-			foreach ($this->pages_repo->retrieveChildren($this->ID) as $child) {
+			foreach (\PagesRepository::retrieveChildren($this->id) as $child) {
 				$this->children->add(\App::make('Monal\Pages\Models\FrontendPage', $child));
 			}
 		}

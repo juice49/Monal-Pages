@@ -109,6 +109,17 @@ class PagesServiceProvider extends ServiceProvider {
 			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
 			$loader->alias('PagesRepository', 'Monal\Pages\Facades\PagesRepository');
 		});
+
+		$this->app['pagetypesrepository'] = $this->app->share(
+			function ($app) {
+				return \App::make('Monal\Pages\Repositories\PageTypesRepository');
+			}
+		);
+		$this->app->booting(
+			function () {
+			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+			$loader->alias('PageTypesRepository', 'Monal\Pages\Facades\PageTypesRepository');
+		});
 	}
 
 	/**

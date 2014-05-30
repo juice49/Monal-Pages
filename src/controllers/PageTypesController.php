@@ -9,27 +9,17 @@
  */
 
 use Monal\GatewayInterface;
-use Monal\Pages\Repositories\PageTypesRepository;
 
 class PageTypesController extends AdminController
 {
 	/**
-	 * The Page Types repository. 
-	 *
-	 * @var		  Monal\Pages\Repositories\PageTypesRepository
-	 */
-	protected $page_types_repo;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param	Monal\GatewayInterface
-	 * @param	Monal\Pages\Repositories\PageTypesRepository
 	 * @return	Void
 	 */
-	public function __construct(GatewayInterface $system_gateway, PageTypesRepository $page_types_repo) {
+	public function __construct(GatewayInterface $system_gateway) {
 		parent::__construct($system_gateway);
-		$this->page_types_repo = $page_types_repo;
 	}
 
 	/**
@@ -43,7 +33,7 @@ class PageTypesController extends AdminController
 		if (!$this->system->user->hasAdminPermissions('page_types')) {
 			return Redirect::route('admin.dashboard');
 		}
-		$page_types = $this->page_types_repo->retrieve();
+		$page_types = PageTypesRepository::retrieve();
 		$messages = $this->system->messages->get();
 		return View::make('pages::page_types.page_types', compact('messages', 'page_types'));
 	}
@@ -59,7 +49,7 @@ class PageTypesController extends AdminController
 		if (!$this->system->user->hasAdminPermissions('page_types', 'create_page_type')) {
 			return Redirect::route('admin.pages');
 		}
-		$page_type = $this->page_types_repo->newModel();
+		$page_type = PageTypesRepository::newModel();
 		$page_type->setTablePrefix('page__');
 		if ($this->input) {
 			$page_type->setName(isset($this->input['name']) ? $this->input['name'] : null);
@@ -69,7 +59,7 @@ class PageTypesController extends AdminController
 			foreach ($data_set_templates as $data_set_template) {
 				$page_type->addDataSetTemplate($data_set_template);
 			}
-			if ($this->page_types_repo->write($page_type)) {
+			if (PageTypesRepository::write($page_type)) {
 				$this->system->messages->add(
 					array(
 						'success' => array(
@@ -94,7 +84,7 @@ class PageTypesController extends AdminController
 		if (!$this->system->user->hasAdminPermissions('page_types', 'edit_page_type')) {
 			return Redirect::route('admin.page-types');
 		}
-		if ($page_type = $this->page_types_repo->retrieve($id)) {
+		if ($page_type = PageTypesRepository::retrieve($id)) {
 			if ($this->input) {
 				$page_type->setName(isset($this->input['name']) ? $this->input['name'] : null);
 				$page_type->setTablePrefix(isset($this->input['table_prefix']) ? $this->input['table_prefix'] : null);
@@ -103,7 +93,7 @@ class PageTypesController extends AdminController
 				foreach ($data_set_templates as $data_set_template) {
 					$page_type->addDataSetTemplate($data_set_template);
 				}
-				if ($this->page_types_repo->write($page_type)) {
+				if (PageTypesRepository::write($page_type)) {
 					$this->system->messages->add(
 						array(
 							'success' => array(
