@@ -33,8 +33,11 @@ class PagesController extends AdminController
 		if (!$this->system->user->hasAdminPermissions('pages')) {
 			return Redirect::route('admin.dashboard');
 		}
+		$pages_tree = PagesHelper::createPagesTreeHTML();
 		$messages = $this->system->messages->get();
-		return View::make('pages::pages.pages', compact('messages', 'pages'));
+		$this->system->dashboard->addCSS('packages/monal/pages/css/pages.css');
+		$this->system->dashboard->addScript('packages/monal/pages/js/pages.js');
+		return View::make('pages::pages.pages', compact('messages', 'pages_tree'));
 	}
 
 	/**

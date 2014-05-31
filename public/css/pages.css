@@ -1,0 +1,112 @@
+
+.pages__tree {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.pages__tree .pages__tree {
+	margin: 12px 0 32px 18px;
+}
+
+.pages__tree__branch {
+	display: block;
+	margin-bottom: 12px;
+}
+
+.pages__tree__branch__details {
+	display: block;
+	width: 400px;
+	padding: 12px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background-color: #ffffff;
+}
+
+.pages__tree__order,
+.page__tree__name,
+.pages__tree__buttons {
+	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+	vertical-align: middle;
+}
+
+.pages__tree__order {
+	padding: 4px;
+	margin-right: 8px;
+	color: #999999;
+	font-size: 16px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background-color: #dddddd;
+	cursor: pointer;
+}
+
+.pages__tree__order:hover {
+	color: #333333;
+}
+
+.pages__tree__order--pseudo {
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	background-color: #eeeeee;
+}
+
+.page__tree__name {
+	width: 237px;
+	color: #555555;
+	cursor: default;
+}
+
+.page__tree__name--pseudo {
+	color: #777777;
+}
+
+.page__tree__name--children {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.page__tree__name--children:hover {
+	color: #333333;
+}
+
+.page__tree__name--open {
+	color: #333333;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+@media screen and (max-width: 600px) {
+
+	.pages__tree .pages__tree {
+		margin-left: 6px;
+	}
+
+	.pages__tree__branch__details {
+		position: relative;
+		width: auto;
+	}
+
+	.pages__tree__order {
+		position: absolute;
+		top: 12px;
+		left: 12px;
+	}
+
+	.page__tree__name {
+		display: block;
+		width: auto;
+		padding-left: 36px
+	}
+
+	.pages__tree__buttons {
+		display: block;
+		margin-top: 6px;
+		text-align: right
+	}
+}

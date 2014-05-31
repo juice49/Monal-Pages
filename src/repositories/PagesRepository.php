@@ -54,6 +54,14 @@ interface PagesRepository
 	public function getPagesTree();
 
 	/**
+	 * Order a collection of pages in the repository.
+	 *
+	 * @param	Array
+	 * @return	Void
+	 */
+	public function orderPages(array $page_order);
+
+	/**
 	 * Retrieve an instance/s from the repository.
 	 *
 	 * @param	Integer

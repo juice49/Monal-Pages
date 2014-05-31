@@ -34,4 +34,8 @@
 		</div>
 	@endif
 
+	<div class="node__y--top">
+		{{ $pages_tree }}
+	</div>
+
 @stop

@@ -275,6 +275,29 @@ class MonalPagesRepository implements PagesRepository
 	}
 
 	/**
+	 * Order a collection of pages in the repository.
+	 *
+	 * @param	Array
+	 * @return	Void
+	 */
+	public function orderPages(array $page_order)
+	{
+		$page_orders = array();
+		$page_ids = array();
+		foreach ($page_order as $order => $page_id) {
+			array_push($page_ids,  $page_id);
+			$page_orders[$page_id] = $order;
+		}
+		$pages = \DB::table($this->table)->select('*')->whereIn('id', $page_ids)->get();
+		if ($pages) {
+			foreach ($pages as $page) {
+				$page->order = $page_orders[$page->id];
+				\DB::table($this->table)->where('id', '=', $page->id)->update((array) $page);
+			}
+		}
+	}
+
+	/**
 	 * Retrieve an instance/s from the repository.
 	 *
 	 * @param	Integer
@@ -284,7 +307,7 @@ class MonalPagesRepository implements PagesRepository
 	{
 		$query = \DB::table($this->table)->select('*');
 		if (!$key) {
-			$results = $query->get();
+			$results = $query->orderBy('order')->get();
 			$pages = \App::make('Illuminate\Database\Eloquent\Collection');
 			foreach ($results as &$result) {
 				$pages->add($this->decodeFromStorage($result));
@@ -334,7 +357,7 @@ class MonalPagesRepository implements PagesRepository
 	public function retrieveChildren($id)
 	{
 		$pages = \App::make('Illuminate\Database\Eloquent\Collection');
-		foreach ($this->query()->where('parent', '=', $id)->get() as $child) {
+		foreach ($this->query()->where('parent', '=', $id)->orderBy('order')->get() as $child) {
 			$pages->add($this->decodeFromStorage($child));
 		}
 		return $pages;
