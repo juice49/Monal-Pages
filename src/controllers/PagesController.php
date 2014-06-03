@@ -123,4 +123,52 @@ class PagesController extends AdminController
 		}
 		return Redirect::route('admin.pages');
 	}
+
+	/**
+	 * Controller for HTTP/S requests for the Edit Page page of the
+	 * Pages package. Mediates the requests and outputs a response.
+	 *
+	 * @param	Integer
+	 * @return	Illuminate\View\View / Illuminate\Http\RedirectResponse
+	 */
+	public function edit($id)
+	{
+		if (!$this->system->user->hasAdminPermissions('pages', 'edit_page_type')) {
+			return Redirect::route('admin.pages');
+		}
+		if ($page = PagesRepository::retrieve($id)) {
+			if ($this->input) {
+				foreach (\DataSetsHelper::extractDataSetValuesFromInput($this->input) as $key => $data_set_values) {
+					$page->dataSets()[$key]->setComponentValues($data_set_values['component_values']);
+				}
+				$page->setName(isset($this->input['name']) ? $this->input['name'] : null);
+				$page->setSlug(isset($this->input['slug']) ? $this->input['slug'] : null);
+				$page->setParent(isset($this->input['parent']) ? $this->input['parent'] : null);
+				$page->setAsHomePage(isset($this->input['home_page']) ? true : false);
+				$page->setTitle(isset($this->input['title']) ? $this->input['title'] : null);
+				$page->setKeywords(isset($this->input['keywords']) ? $this->input['keywords'] : null);
+				$page->setDescription(isset($this->input['description']) ? $this->input['description'] : null);
+				if (PagesRepository::write($page)) {
+					$this->system->messages->add(
+						array(
+							'success' => array(
+								'You successfully updated the page "' . $page->name() . '".',
+							)
+						)
+					)->flash();
+					return Redirect::route('admin.pages');
+				}
+			}
+			foreach ($page->dataSets() as $data_set) {
+				foreach ($data_set->componentCSS() as $css) {
+					$this->system->dashboard->addCSS($css);
+				}
+				foreach ($data_set->componentScripts() as $script) {
+					$this->system->dashboard->addScript($script);
+				}
+			}
+			return View::make('pages::pages.edit', compact('page', 'pages'));
+		}
+		return Redirect::route('admin.pages');
+	}
 }

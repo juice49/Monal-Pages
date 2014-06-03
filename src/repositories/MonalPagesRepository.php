@@ -383,7 +383,7 @@ class MonalPagesRepository implements PagesRepository
 			if ($page->ID()) {
 				$encoded['updated_at'] = date('Y-m-d H:i:s');
 				\DB::table($this->table)->where('id', '=', $page->ID())->update($encoded);
-				//\StreamSchema::addEntry($page->page_type, $page);
+				\StreamSchema::updateEntry($page->page_type, $page);
 				return true;
 			} else {
 				$encoded['created_at'] = date('Y-m-d H:i:s');
