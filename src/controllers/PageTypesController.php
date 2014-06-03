@@ -70,6 +70,8 @@ class PageTypesController extends AdminController
 				return Redirect::route('admin.page-types');
 			}
 		}
+		$this->system->dashboard->addScript('packages/monal/data/js/datasets.js');
+		$this->system->dashboard->addScript('packages/monal/data/js/components.js');
 		return View::make('pages::page_types.create', compact('page_type'));
 	}
 
@@ -104,6 +106,8 @@ class PageTypesController extends AdminController
 					return Redirect::route('admin.page-types');
 				}
 			}
+			$this->system->dashboard->addScript('packages/monal/data/js/datasets.js');
+			$this->system->dashboard->addScript('packages/monal/data/js/components.js');
 			return View::make('pages::page_types.edit', compact('page_type'));
 		}
 		return Redirect::route('admin.page-types');

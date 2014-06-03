@@ -1,8 +1,4 @@
 @extends('../dashboard')
-@section('master-head')
-	<script src="{{ URL::to('packages/monal/data/js/datasets.js') }}"></script>
-	<script src="{{ URL::to('packages/monal/data/js/components.js') }}"></script>
-@stop
 @section('body-header')
 	<h1 class="dashboard__title">Create Page Type</h1>
 @stop

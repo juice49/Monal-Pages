@@ -21,7 +21,7 @@
 			@if (count($page_types) == 1)
 				<div class="message_box message_box--mustard">
 					<ul>
-						<span class="message_box__title">HEY THERE!</span>
+						<span class="message_box__title">Hey There!</span>
 						<li>New pages are created by implementing page types. Before you can create a new page you first need to have created a page type.</li>
 					</ul>
 				</div>

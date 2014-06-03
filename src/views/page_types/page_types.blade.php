@@ -37,7 +37,7 @@
 	<div class="node__y--top">
 		<div class="wall__tiles">
 			@foreach ($page_types as $page_type)
-				<li class="tile">
+				<div class="tile">
 					<div class="tile__content">
 						<ul class="tile__properties">
 							<li class="tile__property">
@@ -54,7 +54,7 @@
 							@endif
 						</div>
 					</div>
-				</li>
+				</div>
 			@endforeach
 		</div>
 	</div>
