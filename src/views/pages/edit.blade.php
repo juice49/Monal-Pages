@@ -11,11 +11,33 @@
 		</ul>
 	</nav>
 
-	{{ $page->view(array(
-		'show_data_sets_validation' => true,
-		'page_hierarchy' => PagesHelper::createPageListForSelect(),
-		'save_button' => 'Update'
-	)) }}
+	@if ($messages)
+		<div class="node__y--bottom">
+			<div class="message_box message_box--tomato">
+				<span class="message_box__title">Great Scott!</span>
+				<ul>
+					@foreach($messages->all() as $message)
+						<li>{{ $message }}</li>
+					@endforeach
+				</ul>
+			</div>
+		</div>
+	@endif
+
+	{{ Form::open() }}
+		{{ $page->view(array(
+			'show_validation' => true,
+			'page_hierarchy' => PagesHelper::createPageListForSelect(),
+		)) }}
+		<div class="form__controls form__controls--standard control_block">
+			<div class="form__controls__left">
+				<a href="{{ URL::route('admin.pages') }}" class="button button--mustard">Cancel</a>
+			</div>
+			<div class="form__controls__right align--right">
+				{{ Form::submit('Update', array('class' => 'button button--wasabi')) }}
+			</div>
+		</div>
+	{{ Form::close() }}
 
 	<script>
 		(function(window, jQuery){

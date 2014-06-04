@@ -110,6 +110,7 @@ class PagesController extends AdminController
 					)->flash();
 					return Redirect::route('admin.pages');
 				}
+				$messages = $this->system->messages->add(PagesRepository::messages()->toArray());
 			}
 			foreach ($page->dataSets() as $data_set) {
 				foreach ($data_set->componentCSS() as $css) {
@@ -119,7 +120,8 @@ class PagesController extends AdminController
 					$this->system->dashboard->addScript($script);
 				}
 			}
-			return View::make('pages::pages.create', compact('page', 'pages'));
+			$messages = $this->system->messages->get();
+			return View::make('pages::pages.create', compact('messages', 'page', 'pages'));
 		}
 		return Redirect::route('admin.pages');
 	}
@@ -158,6 +160,7 @@ class PagesController extends AdminController
 					)->flash();
 					return Redirect::route('admin.pages');
 				}
+				$messages = $this->system->messages->add(PagesRepository::messages()->toArray());
 			}
 			foreach ($page->dataSets() as $data_set) {
 				foreach ($data_set->componentCSS() as $css) {
@@ -167,7 +170,8 @@ class PagesController extends AdminController
 					$this->system->dashboard->addScript($script);
 				}
 			}
-			return View::make('pages::pages.edit', compact('page', 'pages'));
+			$messages = $this->system->messages->get();
+			return View::make('pages::pages.edit', compact('messages', 'page'));
 		}
 		return Redirect::route('admin.pages');
 	}

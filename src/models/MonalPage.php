@@ -413,11 +413,10 @@ class MonalPage implements Page
 			'description' => $this->description,
 		);
 		$data_sets = $this->data_sets;
-		$show_data_sets_validation = isset($settings['show_data_sets_validation']) ? $settings['show_data_sets_validation'] : false;
 		$page_hierarchy = isset($settings['page_hierarchy']) ? $settings['page_hierarchy'] : array();
 		$parent_pages = array('0' => 'None') + $page_hierarchy;
-		$create_button = isset($settings['save_button']) ? $settings['save_button'] : 'Save';
-		$messages = $this->messages();
+		$show_validation = isset($settings['show_validation']) ? $settings['show_validation'] : false;
+		$messages = ($show_validation) ? $this->messages() : false;
 		return \View::make(
 			'pages::models.page',
 			compact(
@@ -425,8 +424,7 @@ class MonalPage implements Page
 				'page',
 				'parent_pages',
 				'data_sets',
-				'create_button',
-				'show_data_sets_validation'
+				'show_validation'
 			)
 		);
 	}

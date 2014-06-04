@@ -140,9 +140,8 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 		);
 		$templates = \Theme::templates();
 		$data_set_temaplates = $this->data_set_templates;
-		$show_data_sets_validation = isset($settings['show_data_sets_validation']) ? $settings['show_data_sets_validation'] : false;
-		$create_button = isset($settings['save_button']) ? $settings['save_button'] : 'Save';
-		$messages = $this->messages();
+		$show_validation = isset($settings['show_validation']) ? $settings['show_validation'] : false;
+		$messages = ($show_validation) ? $this->messages() : false;
 		return \View::make(
 			'pages::models.page_type',
 			compact(
@@ -150,8 +149,7 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 				'page_type',
 				'templates',
 				'data_set_temaplates',
-				'create_button',
-				'show_data_sets_validation'
+				'show_validation'
 			)
 		);
 	}
