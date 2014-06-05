@@ -33,7 +33,6 @@ class FrontendPagesController extends BaseController
 	 */
 	public function page(Page $page)
 	{
-		print_r($page->summariseDataSets());
 		$vars = array();
 		$vars['messages'] = $this->system->messages->get();
 		$vars['page'] = \App::make('Monal\Pages\Models\FrontendPage', $page);
