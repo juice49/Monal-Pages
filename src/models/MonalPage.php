@@ -98,6 +98,13 @@ class MonalPage implements Page
 	protected $data_sets = array();
 
 	/**
+	 * An array that summarises each data set that makes up the page.
+	 *
+	 * @var		Array
+	 */
+	protected $summarised_data_sets = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @return	Void
@@ -350,6 +357,24 @@ class MonalPage implements Page
 	public function addDataSet(DataSet $data_set)
 	{
 		array_push($this->data_sets, $data_set);
+	}
+
+	/**
+	 * Return an array that summarises each data that makes up the page.
+	 *
+	 * @return	Array
+	 */
+	public function summariseDataSets()
+	{
+		if ($this->summarised_data_sets === null) {
+			$components = \App::make('Monal\Data\Libraries\ComponentsInterface');
+			$this->summarised_data_sets = array();
+			foreach ($this->data_sets as $key => $data_set) {
+				$value = $components->make($data_set->componentURI())->summariseValues($data_set->componentValues());
+				$this->summarised_data_sets[$data_set->name()] = $value;
+			}
+		}
+		return $this->summarised_data_sets;
 	}
 
 	/**
