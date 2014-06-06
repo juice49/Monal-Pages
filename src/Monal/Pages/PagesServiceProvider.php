@@ -45,8 +45,7 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 	 */
 	public function install()
 	{
-		mkdir(public_path() . '/packages/pages');
-		\Resource::cloneDirecotry(__DIR__ . '/../../../public', public_path() . '/packages/pages');
+		\Packages::publishAssets('monal', 'pages', __DIR__ . '/../../../public');
 		\Schema::create(
 			'pages',
 			function(Blueprint $table) {
