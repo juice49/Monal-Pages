@@ -33,18 +33,19 @@ class FrontendPagesController extends BaseController
 	 */
 	public function page(Page $page)
 	{
+		// We can shorten this significantly if we remove the extension.
+		// Todo: stop DB inserting extension
+		
 		$vars = array();
 		$vars['messages'] = $this->system->messages->get();
+		
 		$vars['page'] = \App::make('Monal\Pages\Models\FrontendPage', $page);
-
-		View::addLocation(Theme::path() . '/templates');
-		View::addNamespace('theme', Theme::path() . '/templates');
+		
+		// For now, trim the extensions added to the db
 		$theme = $page->pageType()->template();
-		if (substr($theme, -10) == '.blade.php') {
-			$theme = substr_replace($theme , '', -10);
-		} else if (substr($theme, -4) == '.php') {
-			$theme = substr_replace($theme , '', -4);
-		}
+		$theme = basename($theme, '.php');
+		$theme = basename($theme, '.blade');
+		
 		return View::make('theme::' . $theme, $vars);
 	}
 }
