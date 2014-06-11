@@ -93,6 +93,7 @@ class PageTypesController extends AdminController
 				$page_type->setName(isset($this->input['name']) ? $this->input['name'] : null);
 				$page_type->setTablePrefix(isset($this->input['table_prefix']) ? $this->input['table_prefix'] : null);
 				$page_type->discardDataSetTemplates();
+				$page_type->setTemplate(isset($this->input['template']) ? $this->input['template'] : null);
 				$data_set_templates = \DataSetTemplatesHelper::extractDataSetTemplatesFromInput($this->input);
 				foreach ($data_set_templates as $data_set_template) {
 					$page_type->addDataSetTemplate($data_set_template);
