@@ -8,18 +8,12 @@ namespace Monal\Pages\Models;
  * @author	Arran Jacques
  */
 
+use Monal\Models\Model;
 use Monal\Pages\Models\Page;
 use Monal\Data\Models\DataSet;
 
-class MonalPage implements Page
+class MonalPage extends Model implements Page
 {
-	/**
-	 * The page's messages.
-	 *
-	 * @var		Monal\Core\Contracts\MessagesInterface
-	 */
-	protected $messages;
-
 	/**
 	 * The page's ID.
 	 *
@@ -96,33 +90,6 @@ class MonalPage implements Page
 	 * @var		Array
 	 */
 	protected $data_sets = array();
-
-	/**
-	 * An array that summarises each data set that makes up the page.
-	 *
-	 * @var		Array
-	 */
-	protected $summarised_data_sets = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @return	Void
-	 */
-	public function __construct()
-	{
-		$this->messages = \App::make('Monal\Core\Contracts\MessagesInterface');
-	}
-
-	/**
-	 * Return the pages's messages.
-	 *
-	 * @return	Illuminate\Support\MessageBag
-	 */
-	public function messages()
-	{
-		return $this->messages->get();
-	}
 
 	/**
 	 * Return the pages's ID.
@@ -364,17 +331,13 @@ class MonalPage implements Page
 	 *
 	 * @return	Array
 	 */
-	public function summariseDataSets()
+	public function reduceDataSets()
 	{
-		if ($this->summarised_data_sets === null) {
-			$components = \App::make('Monal\Data\Libraries\ComponentsInterface');
-			$this->summarised_data_sets = array();
-			foreach ($this->data_sets as $key => $data_set) {
-				$value = $components->make($data_set->componentURI())->summariseValues($data_set->componentValues());
-				$this->summarised_data_sets[$data_set->name()] = $value;
-			}
-		}
-		return $this->summarised_data_sets;
+		$data_sets = \App::make('Illuminate\Database\Eloquent\Collection');
+        foreach ($this->data_sets as $data_set) {
+            $data_sets->put($data_set->name(), $data_set->component()->reduceValues()); 
+        }
+        return $data_sets;
 	}
 
 	/**
@@ -401,19 +364,13 @@ class MonalPage implements Page
 		if ($validation->passes()) {
 			$page_validates = true;
 		} else {
-			$this->messages->add($validation->messages()->toArray());
+			$this->messages->merge($validation->messages());
 		}
 
 		foreach ($this->dataSets() as $data_set) {
 			if (!$data_set->validates()) {
 				$data_sets_validate = false;
-				$this->messages->add(
-					array(
-						'error' => array(
-							'The values you have entered below contain some errors. Please check them.',
-						)
-					)
-				);
+				$this->messages->add('error', 'The values you have entered below contain some errors. Please check them.');
 			}
 		}
 
@@ -441,7 +398,7 @@ class MonalPage implements Page
 		$page_hierarchy = isset($settings['page_hierarchy']) ? $settings['page_hierarchy'] : array();
 		$parent_pages = array('0' => 'None') + $page_hierarchy;
 		$show_validation = isset($settings['show_validation']) ? $settings['show_validation'] : false;
-		$messages = ($show_validation) ? $this->messages() : false;
+		$messages = $this->messages;
 		return \View::make(
 			'pages::models.page',
 			compact(

@@ -5,15 +5,17 @@
 @stop
 @section('body-content')
 
-	@if ($messages)
-		<div class="message_box message_box--tomato">
-			<span class="message_box__title">Great Scott!</span>
-			<ul>
-				@foreach($messages->all() as $message)
-					<li>{{ $message }}</li>
-				@endforeach
-			</ul>
-		</div> 
+	@if ($messages->any())
+		<div class="node__y--bottom">
+			<div class="message_box message_box--tomato">
+				<span class="message_box__title">Great Scott!</span>
+				<ul>
+					@foreach($messages->all() as $message)
+						<li>{{ $message }}</li>
+					@endforeach
+				</ul>
+			</div>
+		</div>
 	@endif
 
 	{{ Form::open() }}

@@ -8,20 +8,8 @@
  * @author	Arran Jacques
  */
 
-use Monal\GatewayInterface;
-
 class PageTypesController extends AdminController
 {
-	/**
-	 * Constructor.
-	 *
-	 * @param	Monal\GatewayInterface
-	 * @return	Void
-	 */
-	public function __construct(GatewayInterface $system_gateway) {
-		parent::__construct($system_gateway);
-	}
-
 	/**
 	 * Controller for HTTP/S requests for the Page Types page of the Pages
 	 * package. Mediates the requests and outputs a response.
@@ -34,7 +22,7 @@ class PageTypesController extends AdminController
 			return Redirect::route('admin.dashboard');
 		}
 		$page_types = PageTypesRepository::retrieve();
-		$messages = $this->system->messages->get();
+		$messages = $this->system->messages->merge(FlashMessages::all());
 		return View::make('pages::page_types.page_types', compact('messages', 'page_types'));
 	}
 
@@ -60,20 +48,14 @@ class PageTypesController extends AdminController
 				$page_type->addDataSetTemplate($data_set_template);
 			}
 			if (PageTypesRepository::write($page_type)) {
-				$this->system->messages->add(
-					array(
-						'success' => array(
-							'You successfully created the page type "' . $page_type->name() . '".',
-						)
-					)
-				)->flash();
+				FlashMessages::flash('success', 'You successfully created the page type "' . $page_type->name() . '".');
 				return Redirect::route('admin.page-types');
 			}
-			$messages = $this->system->messages->add(PageTypesRepository::messages()->toArray());
+			$messages = $this->system->messages->merge(PageTypesRepository::messages());
 		}
 		$this->system->dashboard->addScript('packages/monal/data/js/datasets.js');
 		$this->system->dashboard->addScript('packages/monal/data/js/components.js');
-		$messages = $this->system->messages->get();
+		$messages = $this->system->messages->merge(FlashMessages::all());
 		return View::make('pages::page_types.create', compact('messages', 'page_type'));
 	}
 
@@ -98,20 +80,14 @@ class PageTypesController extends AdminController
 					$page_type->addDataSetTemplate($data_set_template);
 				}
 				if (PageTypesRepository::write($page_type)) {
-					$this->system->messages->add(
-						array(
-							'success' => array(
-								'You successfully updated the page type "' . $page_type->name() . '".',
-							)
-						)
-					)->flash();
+					$this->system->messages->add('success', 'You successfully updated the page type "' . $page_type->name() . '".');
 					return Redirect::route('admin.page-types');
 				}
-				$messages = $this->system->messages->add(PageTypesRepository::messages()->toArray());
+				$messages = $this->system->messages->merge(PageTypesRepository::messages());
 			}
 			$this->system->dashboard->addScript('packages/monal/data/js/datasets.js');
 			$this->system->dashboard->addScript('packages/monal/data/js/components.js');
-			$messages = $this->system->messages->get();
+			$messages = $this->system->messages->merge(FlashMessages::all());
 			return View::make('pages::page_types.edit', compact('messages', 'page_type'));
 		}
 		return Redirect::route('admin.page-types');

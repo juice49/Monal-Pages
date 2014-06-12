@@ -12,15 +12,6 @@ use Monal\GatewayInterface;
 
 class PagesController extends AdminController
 {
-	/**
-	 * Constructor.
-	 *
-	 * @param	Monal\GatewayInterface
-	 * @return	Void
-	 */
-	public function __construct(GatewayInterface $system_gateway) {
-		parent::__construct($system_gateway);
-	}
 
 	/**
 	 * Controller for HTTP/S requests for the Pages page of the Pages
@@ -34,7 +25,7 @@ class PagesController extends AdminController
 			return Redirect::route('admin.dashboard');
 		}
 		$pages_tree = PagesHelper::createPagesTreeHTML();
-		$messages = $this->system->messages->get();
+		$messages = $this->system->messages->merge(FlashMessages::all());
 		$this->system->dashboard->addCSS('packages/monal/pages/css/pages.css');
 		$this->system->dashboard->addScript('packages/monal/pages/js/pages.js');
 		return View::make('pages::pages.pages', compact('messages', 'pages_tree'));
@@ -65,13 +56,13 @@ class PagesController extends AdminController
 			if ($validation->passes()) {
 				return Redirect::route('admin.pages.create', $this->input['page_type']);
 			}
-			$this->system->messages->add($validation->messages()->toArray());
+			$this->system->messages->merge($validation->messages());
 		}
 		$page_types = array(0 => 'Choose page type...');
 		foreach (PageTypesRepository::retrieve() as $page_type) {
 			$page_types[$page_type->ID()] = $page_type->name();
 		}
-		$messages = $this->system->messages->get();
+		$messages = $this->system->messages->merge(FlashMessages::all());
 		return View::make('pages::pages.choose', compact('messages', 'page_types'));
 	}
 
@@ -91,7 +82,7 @@ class PagesController extends AdminController
 			$page = $page_type->newPageFromType();
 			if ($this->input) {
 				foreach (\DataSetsHelper::extractDataSetValuesFromInput($this->input) as $key => $data_set_values) {
-					$page->dataSets()[$key]->setComponentValues($data_set_values['component_values']);
+					$page->dataSets()[$key]->component()->setValues($data_set_values['component_values']);
 				}
 				$page->setName(isset($this->input['name']) ? $this->input['name'] : null);
 				$page->setSlug(isset($this->input['slug']) ? $this->input['slug'] : null);
@@ -101,26 +92,20 @@ class PagesController extends AdminController
 				$page->setKeywords(isset($this->input['keywords']) ? $this->input['keywords'] : null);
 				$page->setDescription(isset($this->input['description']) ? $this->input['description'] : null);
 				if (PagesRepository::write($page)) {
-					$this->system->messages->add(
-						array(
-							'success' => array(
-								'You successfully created the page "' . $page->name() . '".',
-							)
-						)
-					)->flash();
+					FlashMessages::flash('success', 'You successfully created the page "' . $page->name() . '".');
 					return Redirect::route('admin.pages');
 				}
-				$messages = $this->system->messages->add(PagesRepository::messages()->toArray());
+				$messages = $this->system->messages->merge(PagesRepository::messages());
 			}
 			foreach ($page->dataSets() as $data_set) {
-				foreach ($data_set->componentCSS() as $css) {
+				foreach ($data_set->component()->css() as $css) {
 					$this->system->dashboard->addCSS($css);
 				}
-				foreach ($data_set->componentScripts() as $script) {
+				foreach ($data_set->component()->scripts() as $script) {
 					$this->system->dashboard->addScript($script);
 				}
 			}
-			$messages = $this->system->messages->get();
+			$messages = $this->system->messages->merge(FlashMessages::all());
 			return View::make('pages::pages.create', compact('messages', 'page', 'pages'));
 		}
 		return Redirect::route('admin.pages');
@@ -141,7 +126,7 @@ class PagesController extends AdminController
 		if ($page = PagesRepository::retrieve($id)) {
 			if ($this->input) {
 				foreach (\DataSetsHelper::extractDataSetValuesFromInput($this->input) as $key => $data_set_values) {
-					$page->dataSets()[$key]->setComponentValues($data_set_values['component_values']);
+					$page->dataSets()[$key]->component()->setValues($data_set_values['component_values']);
 				}
 				$page->setName(isset($this->input['name']) ? $this->input['name'] : null);
 				$page->setSlug(isset($this->input['slug']) ? $this->input['slug'] : null);
@@ -151,26 +136,20 @@ class PagesController extends AdminController
 				$page->setKeywords(isset($this->input['keywords']) ? $this->input['keywords'] : null);
 				$page->setDescription(isset($this->input['description']) ? $this->input['description'] : null);
 				if (PagesRepository::write($page)) {
-					$this->system->messages->add(
-						array(
-							'success' => array(
-								'You successfully updated the page "' . $page->name() . '".',
-							)
-						)
-					)->flash();
+					FlashMessages::flash('success', 'You successfully updated the page "' . $page->name() . '".');
 					return Redirect::route('admin.pages');
 				}
-				$messages = $this->system->messages->add(PagesRepository::messages()->toArray());
+				$messages = $this->system->messages->merge(PagesRepository::messages());
 			}
 			foreach ($page->dataSets() as $data_set) {
-				foreach ($data_set->componentCSS() as $css) {
+				foreach ($data_set->component()->css() as $css) {
 					$this->system->dashboard->addCSS($css);
 				}
-				foreach ($data_set->componentScripts() as $script) {
+				foreach ($data_set->component()->scripts() as $script) {
 					$this->system->dashboard->addScript($script);
 				}
 			}
-			$messages = $this->system->messages->get();
+			$messages = $this->system->messages->merge(FlashMessages::all());
 			return View::make('pages::pages.edit', compact('messages', 'page'));
 		}
 		return Redirect::route('admin.pages');

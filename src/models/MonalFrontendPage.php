@@ -77,11 +77,9 @@ class MonalFrontendPage implements FrontendPage
 
 		$pages_data_sets = $page->dataSets();
 		if (!empty($pages_data_sets)) {
-			$components = \App::make('Monal\Data\Libraries\ComponentsInterface');
 			foreach ($page->dataSets() as $data_set) {
-				$stripped_values = $components->make($data_set->componentURI())
-					->stripImplementationValues($data_set->componentValues());
-				$this->data_sets->{\Text::snakeCaseString($data_set->name())} = $stripped_values;
+				$value = $data_set->component()->prepareValuesForStorage();
+				$this->data_sets->{\Text::snakeCaseString($data_set->name())} = $value;
 			}
 		}
 	}

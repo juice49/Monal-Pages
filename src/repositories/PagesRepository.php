@@ -16,16 +16,9 @@ use Monal\Pages\Models\Page;
 interface PagesRepository
 {
 	/**
-	 * Return the repository's messages.
-	 *
-	 * @return	Illuminate\Support\MessageBag
-	 */
-	public function messages();
-
-	/**
 	 * Return a new Page model.
 	 *
-	 * @return	Monal\Pages\Models\PageType
+	 * @return	Monal\Pages\Models\Page
 	 */
 	public function newModel();
 

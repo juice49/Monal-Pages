@@ -4,7 +4,7 @@
 @stop
 @section('body-content')
 
-	@if ($messages)
+	@if ($messages->any())
 		<div class="node__y--bottom">
 			<div class="message_box message_box--tomato">
 				<span class="message_box__title">Great Scott!</span>

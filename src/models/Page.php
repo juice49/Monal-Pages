@@ -15,13 +15,6 @@ use Monal\Data\Models\DataSet;
 interface Page extends DataStreamEntry
 {
 	/**
-	 * Return the pages's messages.
-	 *
-	 * @return	Illuminate\Support\MessageBag
-	 */
-	public function messages();
-
-	/**
 	 * Return the pages's ID.
 	 *
 	 * @return	Integer

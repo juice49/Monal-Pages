@@ -8,45 +8,19 @@ namespace Monal\Pages\Repositories;
  * @author	Arran Jacques
  */
 
+use Monal\Repositories\Repository;
 use Monal\Pages\Repositories\PagesRepository;
 use Monal\Pages\Models\Page;
 use Monal\Pages\Models\PageType;
 
-class MonalPagesRepository implements PagesRepository
+class MonalPagesRepository extends Repository implements PagesRepository
 {
-	/**
-	 * The repository's messages.
-	 *
-	 * @var		 Monal\Core\Contracts\MessagesInterface
-	 */
-	protected $messages;
-
 	/**
 	 * The database table the repository uses.
 	 *
 	 * @var		String
 	 */
 	protected $table = 'pages';
-
-	/**
-	 * Constructor.
-	 *
-	 * @return	Void
-	 */
-	public function __construct()
-	{
-		$this->messages = \App::make('Monal\Core\Contracts\MessagesInterface');
-	}
-
-	/**
-	 * Return the repository's messages.
-	 *
-	 * @return	Illuminate\Support\MessageBag
-	 */
-	public function messages()
-	{
-		return $this->messages->get();
-	}
 
 	/**
 	 * Return a new Page model.
@@ -122,7 +96,7 @@ class MonalPagesRepository implements PagesRepository
 		if ($page->validates($validation_rules, $validation_messages)) {
 			return true;
 		} else {
-			$this->messages->add($page->messages()->toArray());
+			$this->messages->merge($page->messages());
 			return false;
 		}
 	}
@@ -157,8 +131,7 @@ class MonalPagesRepository implements PagesRepository
 	 */
 	protected function decodeFromStorage($results)
 	{
-		$page_type_repo = \App::make('Monal\Pages\Repositories\PageTypesRepository');
-		if ($page_type = $page_type_repo->retrieve($results->page_type)) {
+		if ($page_type = $page_type = \PageTypesRepository::retrieve($results->page_type)) {
 			$page = $page_type->newPageFromType();
 		} else {
 			$page = $this->newModel();
@@ -172,7 +145,6 @@ class MonalPagesRepository implements PagesRepository
 		$page->setTitle($results->title);
 		$page->setKeywords($results->keywords);
 		$page->setDescription($results->description);
-
 		$i = 0;
 		$page_data_sets = \StreamSchema::getEntires($page_type, $results->id);
 		if (!empty($page_data_sets)) {
@@ -181,11 +153,8 @@ class MonalPagesRepository implements PagesRepository
 			unset($page_data_sets->rel);
 			unset($page_data_sets->created_at);
 			unset($page_data_sets->updated_at);
-			foreach ($page_data_sets as $key => $value) {
-				$components = \App::make('Monal\Data\Libraries\ComponentsInterface');
-				$dressed_values = $components->make($page->dataSets()[$i]->componentURI())
-									->dressImplementationValues($value);
-				$page->dataSets()[$i]->setComponentValues($dressed_values);
+			foreach ($page_data_sets as $value) {
+				$page->dataSets()[$i]->component()->setValueFromStoragePreparedValues($value);
 				$i++;
 			}
 		}

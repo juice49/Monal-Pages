@@ -10,7 +10,7 @@
 		</div>
 	@endif
 
-	@if ($messages)
+	@if ($messages->any())
 		<div class="node__y--top">
 			@if ($messages->has('success'))
 				<div class="message_box message_box--wasabi">

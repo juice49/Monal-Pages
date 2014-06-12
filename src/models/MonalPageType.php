@@ -44,17 +44,15 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 	/**
 	 * Generate a new page model based on the page type.
 	 *
-	 * @return	Monal\Pages\Models\MonalPage
+	 * @return	Monal\Pages\Models\Page
 	 */
 	public function newPageFromType()
 	{
-		$page = \App::make('Monal\Pages\Models\Page');
+		$page = \PagesRepository::newModel();
 		$page->setPageType($this);
 		foreach ($this->dataSetTemplates() as $data_set_template) {
-			$data_set = \App::make('Monal\Data\Models\DataSet');
+			$data_set = \DataSetsRepository::newModel($data_set_template);
 			$data_set->setName($data_set_template->name());
-			$data_set->setComponent($data_set_template->componentURI());
-			$data_set->setComponentSettings($data_set_template->componentSettings());
 			$page->addDataSet($data_set);
 		}
 		return $page;
@@ -74,18 +72,24 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 		{
 			return (preg_match('/^[a-z0-9 \-_]+$/i', $value) AND preg_match('/[a-zA-Z]/', $value)) ? true : false;
 		});
+
+		// Build the data to be validated.
 		$data = array(
 			'name' => $this->name,
 			'table_prefix' => $this->table_prefix,
 			'template' => $this->template
 		);
+
+		// Check the page validates.
+		$page_type_validates = false;
 		$validation = \Validator::make($data, $validation_rules, $validation_messages);
 		if ($validation->passes()) {
 			$page_type_validates = true;
 		} else {
-			$page_type_validates = false;
-			$this->messages->add($validation->messages()->toArray());
+			$this->messages->merge($validation->messages());
 		}
+
+		// Check the data set templates validate.
 		$templates_validate = true;
 		$validation_rules = array(
 			'name' => 'required|max:100|page_type_data_set_template_name',
@@ -102,26 +106,15 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 		foreach ($this->data_set_templates as $data_set_template) {
 			if (isset($data_set_template_names[\Str::slug($data_set_template->name())])) {
 				$templates_validate = false;
-				$this->messages->add(
-					array(
-						'error' => array(
-							'You can’t have two data sets with the same name.',
-						)
-					)
-				);
+				$this->messages->add('error', 'You can’t have two data sets with the same name.');
 			}
 			$data_set_template_names[\Str::slug($data_set_template->name())] = $data_set_template->name();
 			if (!$data_set_template->validates($validation_rules, $validation_messages)) {
-				$this->messages->add(
-					array(
-						'error' => array(
-							'There are some errors in the data sets you have used.',
-						)
-					)
-				);
+				$this->messages->add('error', 'There are some errors in the data sets you have used.');
 				$templates_validate = false;
 			}
 		}
+
 		return ($page_type_validates AND $templates_validate) ? true : false;
 	}
 
@@ -141,7 +134,7 @@ class MonalPageType extends MonalDataStreamTemplate implements PageType
 		$templates = \Theme::templates();
 		$data_set_temaplates = $this->data_set_templates;
 		$show_validation = isset($settings['show_validation']) ? $settings['show_validation'] : false;
-		$messages = ($show_validation) ? $this->messages() : false;
+		$messages = $this->messages;
 		return \View::make(
 			'pages::models.page_type',
 			compact(

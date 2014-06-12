@@ -5,8 +5,8 @@ use Illuminate\Support\ServiceProvider;
 use Monal\MonalPackageServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 
-class PagesServiceProvider extends ServiceProvider implements MonalPackageServiceProvider {
-
+class PagesServiceProvider extends ServiceProvider implements MonalPackageServiceProvider
+{
 	/**
 	 * Indicates if loading of the provider is deferred.
 	 *
@@ -21,7 +21,7 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 	 */
 	public function packageNamespace()
 	{
-		return 'monal/pages';
+		return 'monal\pages';
 	}
 
 	/**
@@ -45,7 +45,7 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 	 */
 	public function install()
 	{
-		\Packages::publishAssets('monal', 'pages', __DIR__ . '/../../../public');
+		\Monal\API\Packages::publishAssets('monal', 'pages', __DIR__ . '/../../../public');
 		\Schema::create(
 			'pages',
 			function(Blueprint $table) {
@@ -91,14 +91,13 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 			include $routes;
 		}
 
-		\Monal::registerMenuOption('Pages', 'Pages', 'pages', 'pages');
-		\Monal::registerMenuOption('Pages', 'Page Types', 'page-types', 'page-types');
+		\Monal\API\Dashboard::addMenuOption('Pages', 'Pages', 'pages', 'pages');
+		\Monal\API\Dashboard::addMenuOption('Pages', 'Page Types', 'page-types', 'page-types');
 
-		\Monal::registerFrontendRouteLogic(function($url_segments) {
-			$pages_repo = \App::make('Monal\Pages\Repositories\PagesRepository');
+		\Monal\API\Routes::addFrontendRouteClosure(function($url_segments) {
 			if (empty($url_segments)) {
-				if ($page = $pages_repo->retrieveHomePage()) {
-					$controller = new \FrontendPagesController(\Monal::instance());
+				if ($page = \PagesRepository::retrieveHomePage()) {
+					$controller = new \FrontendPagesController(\Monal\API::systemInstance());
 					return $controller->page($page);
 				}
 			} else {
@@ -106,8 +105,8 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 				foreach ($url_segments as $segment) {
 					$url .= '/' . $segment;
 				}
-				if ($page = $pages_repo->retrieveByURL($url)) {
-					$controller = new \FrontendPagesController(\Monal::instance());
+				if ($page = \PagesRepository::retrieveByURL($url)) {
+					$controller = new \FrontendPagesController(\Monal\API::systemInstance());
 					return $controller->page($page);
 				}
 			}
@@ -130,7 +129,7 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 		$this->app->bind(
 			'Monal\Pages\Models\Page',
 			function () {
-				return new \Monal\Pages\Models\MonalPage;
+				return new \Monal\Pages\Models\MonalPage();
 			}
 		);
 		$this->app->bind(

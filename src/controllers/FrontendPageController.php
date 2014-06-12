@@ -14,17 +14,6 @@ use Monal\Pages\Models\Page;
 class FrontendPagesController extends BaseController
 {
 	/**
-	 * Constructor.
-	 *
-	 * @param	Monal\GatewayInterface
-	 * @return	Void
-	 */
-	public function __construct(GatewayInterface $system_gateway)
-	{
-		parent::__construct($system_gateway);
-	}
-
-	/**
 	 * Controller for HTTP/S requests for a page created via the Pages
 	 * package. Mediates the requests and outputs a response.
 	 *
@@ -34,7 +23,7 @@ class FrontendPagesController extends BaseController
 	public function page(Page $page)
 	{
 		$vars = array();
-		$vars['messages'] = $this->system->messages->get();
+		$vars['messages'] = $this->system->messages->merge(FlashMessages::all());
 		$vars['page'] = \App::make('Monal\Pages\Models\FrontendPage', $page);
 
 		View::addLocation(Theme::path() . '/templates');

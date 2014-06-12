@@ -8,44 +8,18 @@ namespace Monal\Pages\Repositories;
  * @author	Arran Jacques
  */
 
+use Monal\Repositories\Repository;
 use Monal\Pages\Repositories\PageTypesRepository;
 use Monal\Pages\Models\PageType;
 
-class MonalPageTypesRepository implements PageTypesRepository
+class MonalPageTypesRepository extends Repository implements PageTypesRepository
 {
-	/**
-	 * The repository's messages.
-	 *
-	 * @var		 Monal\Core\Contracts\MessagesInterface
-	 */
-	protected $messages;
-
 	/**
 	 * The database table the repository uses.
 	 *
 	 * @var		String
 	 */
 	protected $table = 'page_types';
-
-	/**
-	 * Constructor.
-	 *
-	 * @return	Void
-	 */
-	public function __construct()
-	{
-		$this->messages = \App::make('Monal\Core\Contracts\MessagesInterface');
-	}
-
-	/**
-	 * Return the repository's messages.
-	 *
-	 * @return	Illuminate\Support\MessageBag
-	 */
-	public function messages()
-	{
-		return $this->messages->get();
-	}
 
 	/**
 	 * Return a new Page Type model.
@@ -94,7 +68,7 @@ class MonalPageTypesRepository implements PageTypesRepository
 		if ($page_type->validates($validation_rules, $validation_messages)) {
 			return true;
 		} else {
-			$this->messages->add($page_type->messages()->toArray());
+			$this->messages->merge($page_type->messages());
 			return false;
 		}
 	}
@@ -120,8 +94,8 @@ class MonalPageTypesRepository implements PageTypesRepository
 				array(
 					'uri' => $data_set_template->URI(),
 					'name' => $data_set_template->name(),
-					'component' => $data_set_template->componentURI(),
-					'component_settings' => $data_set_template->componentSettings(),
+					'component' => $data_set_template->component()->URI(),
+					'component_settings' => $data_set_template->component()->settings(),
 				)
 			);
 		}
@@ -144,11 +118,12 @@ class MonalPageTypesRepository implements PageTypesRepository
 		$page_type->setTemplate($results->template);
 		$data_set_templates = json_decode($results->data_set_templates, true);
 		foreach ($data_set_templates as $encoded_data_set_template) {
-			$data_set_template = \App::make('Monal\Data\Models\DataSetTemplate');
+			$data_set_template = \DataSetTemplatesRepository::newModel();
 			$data_set_template->setURI($encoded_data_set_template['uri']);
 			$data_set_template->setName($encoded_data_set_template['name']);
-			$data_set_template->setComponent($encoded_data_set_template['component']);
-			$data_set_template->setComponentSettings($encoded_data_set_template['component_settings']);
+			$component = \Components::makeTemplate($encoded_data_set_template['component']);
+			$component->setSettings($encoded_data_set_template['component_settings']);
+			$data_set_template->setComponent($component);
 			$page_type->addDataSetTemplate($data_set_template);
 		}
 		return $page_type;

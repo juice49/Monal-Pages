@@ -31,7 +31,7 @@ interface PageType extends DataStreamTemplate
 	/**
 	 * Generate a new page model based on the page type.
 	 *
-	 * @return	Monal\Pages\Models\MonalPage
+	 * @return	Monal\Pages\Models\Page
 	 */
 	public function newPageFromType();
 
