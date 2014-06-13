@@ -139,7 +139,7 @@ class MonalPageTypesRepository extends Repository implements PageTypesRepository
 	{
 		$query = \DB::table($this->table)->select('*');
 		if (!$key) {
-			$results = $query->get();
+			$results = $query->orderBy('name')->get();
 			$page_types = \App::make('Illuminate\Database\Eloquent\Collection');
 			foreach ($results as &$result) {
 				$page_types->add($this->decodeFromStorage($result));
