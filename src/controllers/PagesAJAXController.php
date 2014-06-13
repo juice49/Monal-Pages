@@ -19,7 +19,7 @@ class PagesAJAXController extends BaseController
 	 */
 	public function __construct()
 	{
-		parent::__construct(\App::make('Monal\GatewayInterface'));
+		parent::__construct(\App::make('Monal\Monal'));
 	}
 
 	/**
