@@ -50,11 +50,12 @@ class MonalPagesRepository extends Repository implements PagesRepository
 	 */
 	public function validatesForStorage(Page $page)
 	{
-		// Allow alpha, numeric, hypens, underscores and space characters, and
-		// must contain at least 1 alpha or numeric character.
+		// Allow alpha, numeric, hypens, underscores, commas, ampersands,
+		// apostrophes space characters, and must contain at least 1 alpha or
+		// numeric character.
 		\Validator::extend('page_name', function($attribute, $value, $parameters)
 		{
-			return (preg_match('/^[a-z0-9 \-_]+$/i', $value) AND preg_match('/[a-zA-Z0-9]/', $value)) ? true : false;
+			return (preg_match('/^[a-z0-9 \-_,\'&]+$/i', $value) AND preg_match('/[a-zA-Z0-9]/', $value)) ? true : false;
 		});
 		\Validator::extend('page_slug_chars', function($attribute, $value, $parameters)
 		{
