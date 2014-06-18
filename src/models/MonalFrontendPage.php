@@ -77,8 +77,8 @@ class MonalFrontendPage implements FrontendPage
 
 		$pages_data_sets = $page->dataSets();
 		if (!empty($pages_data_sets)) {
-			foreach ($page->dataSets() as $data_set) {
-				$value = $data_set->component()->prepareValuesForStorage();
+			foreach ($pages_data_sets as $data_set) {
+				$value = $data_set->component()->prepareValuesForOutput();
 				$this->data_sets->{\Text::snakeCaseString($data_set->name())} = $value;
 			}
 		}
