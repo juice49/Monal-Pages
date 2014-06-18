@@ -67,7 +67,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 
 		$unique_exception = ($page->ID()) ? ',' . $page->ID() : null;
 		$validation_rules = array(
-			'name' => 'required|max:100|page_name|unique:pages,name' . $unique_exception,
+			'name' => 'required|max:100|page_name',
 			'page_type' => 'required',
 			'slug' => 'max:100|page_slug_chars|page_slug_separators',
 			'url' => 'unique:pages,url' . $unique_exception,
@@ -77,12 +77,11 @@ class MonalPagesRepository extends Repository implements PagesRepository
 			'name.required' => 'You need to give this page a Name.',
 			'name.max' => 'Your Name for this page is to long. It must be no more than 100 characters long.',
 			'name.page_name' => 'Your Name for this page is invalid. It can only contain letters, numbers, underscores, hyphens and spaces, and must contain at least 1 letter or number.',
-			'name.unique' => 'There is already a page using this Name. Please choose a different one.',
 			'page_type.required' => 'This page must implement a valid page type.',
 			'slug.max' => 'Your Slug for this page is to long. It must be no more than 100 characters long.',
 			'slug.page_slug_chars' => 'Your Slug for this page is invalid. It can only contain letters, numbers, underscores, hyphens and forward slashes.',
 			'slug.page_slug_separators' => 'Your Slug for this page is invalid. Forward slashes must be separated by at least 1 valid character.',
-			'url.unique' => 'There is already a page with this URL.',
+			'url.unique' => 'There is already a page with this URL. Please change the page title or slug to ensure a unique URL.',
 			'title.max' => 'Your Title for this page is to long. It must be no more than 255 characters long.',
 		);
 		$url = '/' . $page->slug();
