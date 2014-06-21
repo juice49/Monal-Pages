@@ -27,11 +27,18 @@ class MonalFrontendPage implements FrontendPage
 	public $name = null;
 
 	/**
+	 * The page's slug.
+	 *
+	 * @var		String
+	 */
+	public $slug = null;
+
+	/**
 	 * The page's URL.
 	 *
 	 * @var		String
 	 */
-	public $url = null;
+	protected $url = null;
 
 	/**
 	 * An array of the page's data sets.
@@ -45,7 +52,7 @@ class MonalFrontendPage implements FrontendPage
 	 *
 	 * @var		Integer
 	 */
-	private $parent_id = null;
+	protected $parent_id = null;
 
 	/**
 	 * The page's parent.
@@ -62,6 +69,34 @@ class MonalFrontendPage implements FrontendPage
 	protected $children = null;
 
 	/**
+	 * The page's title.
+	 *
+	 * @var		String
+	 */
+	public $title = null;
+
+	/**
+	 * The page's description.
+	 *
+	 * @var		String
+	 */
+	public $description = null;
+
+	/**
+	 * The page's keywords.
+	 *
+	 * @var		String
+	 */
+	public $keywords = null;
+
+	/**
+	 * Is the page the home page?
+	 *
+	 * @var		Boolean
+	 */
+	protected $home_page = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param	Monal\Pages\Models\Page
@@ -71,9 +106,14 @@ class MonalFrontendPage implements FrontendPage
 	{
 		$this->id = $page->ID();
 		$this->name = $page->name();
+		$this->slug = $page->slug();
 		$this->url = \URL::to($page->URL());
 		$this->parent_id = $page->parent();
 		$this->data_sets = new \stdClass;
+		$this->title = $page->title();
+		$this->description = $page->description();
+		$this->keywords = $page->keywords();
+		$this->home_page = $page->isHomePage();
 
 		$pages_data_sets = $page->dataSets();
 		if (!empty($pages_data_sets)) {
@@ -105,13 +145,23 @@ class MonalFrontendPage implements FrontendPage
 	}
 
 	/**
+	 * Return the pages's slug.
+	 *
+	 * @return	String
+	 */
+	public function slug()
+	{
+		return $this->slug;
+	}
+
+	/**
 	 * Return the pages's URL.
 	 *
 	 * @return	String
 	 */
 	public function URL()
 	{
-		return $this->url;
+		return $this->isHomePage() ? \URL::to('/') : $this->url;
 	}
 
 	/**
@@ -154,5 +204,95 @@ class MonalFrontendPage implements FrontendPage
 			}
 		}
 		return $this->children;
+	}
+
+	/**
+	 * Return the pages's title.
+	 *
+	 * @return	String
+	 */
+	public function title()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * Return the pages's description.
+	 *
+	 * @return	String
+	 */
+	public function description()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * Return the pages's keywords.
+	 *
+	 * @return	String
+	 */
+	public function keywords()
+	{
+		return $this->keywords;
+	}
+
+	/**
+	 * Return a meta title for the page.
+	 *
+	 * @return	String
+	 */
+	public function metaTitle()
+	{
+		return ($this->title == '') ? $this->name : $this->title;
+	}
+
+	/**
+	 * Return a meta tag for the page’s description.
+	 *
+	 * @return	String
+	 */
+	public function metaDescriptionTag()
+	{
+		return '<meta name="description" content="' . $this->description() . '" />';
+	}
+
+	/**
+	 * Return a meta tag for the page’s keywords.
+	 *
+	 * @return	String
+	 */
+	public function metaKeywordsTag()
+	{
+		return '<meta name="keywords" content="' . $this->keywords() . '" />';
+	}
+
+	/**
+	 * Is this page the home page?
+	 *
+	 * @return	Boolean
+	 */
+	public function isHomePage()
+	{
+		return $this->home_page;
+	}
+
+	/**
+	 * Return a canonical link for the page.
+	 *
+	 * @return	String
+	 */
+	public function canonicalLink()
+	{
+		return $this->URL();
+	}
+
+	/**
+	 * Return a canonical tag for the page.
+	 *
+	 * @return	String
+	 */
+	public function canonicalTag()
+	{
+		return '<link rel="canonical" href="' . $this->canonicalLink() . '" />';
 	}
 }
