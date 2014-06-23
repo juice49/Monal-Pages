@@ -8,7 +8,6 @@
  * @author	Arran Jacques
  */
 
-use Monal\GatewayInterface;
 use Monal\Pages\Models\Page;
 
 class FrontendPagesController extends BaseController
