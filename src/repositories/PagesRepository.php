@@ -70,12 +70,12 @@ interface PagesRepository
 	public function retrieveHomePage();
 
 	/**
-	 * Retrieve a page from the repository by its URL.
+	 * Retrieve a page from the repository by its URI.
 	 *
 	 * @param	String
 	 * @return	Monal\Pages\Models\Page
 	 */
-	public function retrieveByURL($url);
+	public function retrieveByURI($uri);
 
 	/**
 	 * Retrieve all child pages of a given page.

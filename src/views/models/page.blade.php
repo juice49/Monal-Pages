@@ -14,8 +14,8 @@
 			{{ Form::input('text', 'slug', $page['slug'], array('class' => 'js--slug input__text')) }}
 		</div>
 		<div class="control_block">
-			{{ Form::label('url', 'URL', array('class' => 'label label--block')) }}
-			{{ Form::input('text', 'url', null, array('class' => 'js--url input__text input__text--disabled')) }}
+			{{ Form::label('uri', 'URI', array('class' => 'label label--block')) }}
+			{{ Form::input('text', 'uri', null, array('class' => 'js--uri input__text input__text--disabled')) }}
 		</div>
 		<div class="control_block">
 			<label for="home_page" class="label checkbox">
@@ -55,10 +55,10 @@
 
 		'use strict';
 
-		var parent_page_url_map = {}
+		var parent_page_uri_map = {}
 
 		@foreach (PagesRepository::getEntryLog() as $page)
-			parent_page_url_map['{{ $page['id'] }}'] = '{{ $page['url'] }}';
+			parent_page_uri_map['{{ $page['id'] }}'] = '{{ $page['uri'] }}';
 		@endforeach
 
 		function pageSlug() {
@@ -71,19 +71,19 @@
 				page_slug;
 
 			if (parent_id !== '0') {
-				if (parent_page_url_map[parent_id] !== undefined) {
-					parent_slug += parent_page_url_map[parent_id];
+				if (parent_page_uri_map[parent_id] !== undefined) {
+					parent_slug += parent_page_uri_map[parent_id];
 				}
 			}
 
 			parent_slug += '/';
 			page_slug = (slug.length > 0) ? slug : slugify(name);
 
-			$('.js--url').val(parent_slug + page_slug);
+			$('.js--uri').val(parent_slug + page_slug);
 		}
 
 		$(document).ready(function(){
-			$('.js--name, .js--parent, .js--slug, .js--url').on('keyup', pageSlug).on('change', pageSlug);
+			$('.js--name, .js--parent, .js--slug, .js--uri').on('keyup', pageSlug).on('change', pageSlug);
 			pageSlug();
 		});
 	})(window, jQuery);

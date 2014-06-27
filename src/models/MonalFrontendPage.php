@@ -34,11 +34,11 @@ class MonalFrontendPage implements FrontendPage
 	public $slug = null;
 
 	/**
-	 * The page's URL.
+	 * The page's URI.
 	 *
 	 * @var		String
 	 */
-	protected $url = null;
+	protected $uri = null;
 
 	/**
 	 * An array of the page's data sets.
@@ -107,7 +107,7 @@ class MonalFrontendPage implements FrontendPage
 		$this->id = $page->ID();
 		$this->name = $page->name();
 		$this->slug = $page->slug();
-		$this->url = \URL::to($page->URL());
+		$this->uri = $page->URI();
 		$this->parent_id = $page->parent();
 		$this->data_sets = new \stdClass;
 		$this->title = $page->title();
@@ -155,13 +155,23 @@ class MonalFrontendPage implements FrontendPage
 	}
 
 	/**
+	 * Return the pages's uri.
+	 *
+	 * @return	String
+	 */
+	public function URI()
+	{
+		return $this->uri;
+	}
+
+	/**
 	 * Return the pages's URL.
 	 *
 	 * @return	String
 	 */
 	public function URL()
 	{
-		return $this->isHomePage() ? \URL::to('/') : $this->url;
+		return $this->isHomePage() ? \URL::to('/') : \URL::to($this->uri);
 	}
 
 	/**

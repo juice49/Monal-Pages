@@ -54,7 +54,7 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 				$table->string('name', 255)->nullable();
 				$table->integer('parent')->nullable();
 				$table->string('slug', 255)->nullable();
-				$table->text('url')->nullable();
+				$table->text('uri')->nullable();
 				$table->string('title', 255)->nullable();
 				$table->text('description')->nullable();
 				$table->text('keywords')->nullable();
@@ -101,11 +101,11 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 					return $controller->page($page);
 				}
 			} else {
-				$url = '';
+				$uri = '';
 				foreach ($url_segments as $segment) {
-					$url .= '/' . $segment;
+					$uri .= '/' . $segment;
 				}
-				if ($page = \PagesRepository::retrieveByURL($url)) {
+				if ($page = \PagesRepository::retrieveByURI($uri)) {
 					$controller = new \FrontendPagesController(\Monal\API::systemInstance());
 					return $controller->page($page);
 				}

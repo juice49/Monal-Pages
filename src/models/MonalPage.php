@@ -50,11 +50,11 @@ class MonalPage extends Model implements Page
 	public $slug = null;
 
 	/**
-	 * The pages's URL.
+	 * The pages's URI.
 	 *
 	 * @var		String
 	 */
-	protected $url = null;
+	protected $uri = null;
 
 	/**
 	 * The pages's title.
@@ -145,13 +145,13 @@ class MonalPage extends Model implements Page
 	}
 
 	/**
-	 * Return the pages's URL.
+	 * Return the pages's URI.
 	 *
 	 * @return	String
 	 */
-	public function URL()
+	public function URI()
 	{
-		return $this->url;
+		return $this->uri;
 	}
 
 	/**
@@ -260,15 +260,15 @@ class MonalPage extends Model implements Page
 	}
 
 	/**
-	 * Set the pages URL
+	 * Set the pages URI
 	 *
 	 * @param	String
 	 * @return	Void
 	 */
-	public function setURL($url)
+	public function setURI($uri)
 	{
-		$url = strtolower(trim($url, '/'));
-		$this->url = '/' . $url;
+		$uri = strtolower(trim($uri, '/'));
+		$this->uri = '/' . $uri;
 	}
 
 	/**
@@ -355,7 +355,7 @@ class MonalPage extends Model implements Page
 			'name' => $this->name,
 			'page_type' => $this->page_type,
 			'slug' => $this->slug,
-			'url' => $this->URL(),
+			'uri' => $this->URI(),
 			'title' => $this->title,
 			'keywords' => $this->keywords,
 			'description' => $this->description,

@@ -71,7 +71,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 			'name' => 'required|max:100|page_name',
 			'page_type' => 'required',
 			'slug' => 'max:100|page_slug_chars|page_slug_separators',
-			'url' => 'unique:pages,url' . $unique_exception,
+			'uri' => 'unique:pages,uri' . $unique_exception,
 			'title' => 'max:255'
 		);
 		$validation_messages = array(
@@ -82,17 +82,17 @@ class MonalPagesRepository extends Repository implements PagesRepository
 			'slug.max' => 'Your Slug for this page is to long. It must be no more than 100 characters long.',
 			'slug.page_slug_chars' => 'Your Slug for this page is invalid. It can only contain letters, numbers, underscores, hyphens and forward slashes.',
 			'slug.page_slug_separators' => 'Your Slug for this page is invalid. Forward slashes must be separated by at least 1 valid character.',
-			'url.unique' => 'There is already a page with this URL. Please change the page title or slug to ensure a unique URL.',
+			'uri.unique' => 'There is already a page with this URI. Please change the page title or slug to ensure a unique URI.',
 			'title.max' => 'Your Title for this page is to long. It must be no more than 255 characters long.',
 		);
-		$url = '/' . $page->slug();
+		$uri = '/' . $page->slug();
 		if ($page->parent()){
 			if ($parent = $this->retrieve($page->parent()))
 			{
-				$url = '/' . trim($parent->url(), '/') . $url;
+				$uri = '/' . trim($parent->uri(), '/') . $uri;
 			}
 		}
-		$page->setURL($url);
+		$page->setURI($uri);
 		if ($page->validates($validation_rules, $validation_messages)) {
 			return true;
 		} else {
@@ -115,7 +115,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 			'page_type' => $page_type,
 			'parent' => $page->parent(),
 			'slug' => $page->slug(),
-			'url' => $page->URL(),
+			'uri' => $page->URI(),
 			'is_home' => $page->isHomePage(),
 			'title' => $page->title(),
 			'keywords' => $page->keywords(),
@@ -140,7 +140,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 		$page->setName($results->name);
 		$page->setParent($results->parent);
 		$page->setSlug($results->slug);
-		$page->setURL($results->url);
+		$page->setURI($results->uri);
 		$page->setAsHomePage($results->is_home);
 		$page->setTitle($results->title);
 		$page->setKeywords($results->keywords);
@@ -177,7 +177,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 				'name' => $page->name(),
 				'parent' => $page->parent(),
 				'slug' => $page->slug(),
-				'url' => $page->URL(),
+				'uri' => $page->URI(),
 				'title' => $page->title(),
 				'description' => $page->description(),
 				'keywords' => $page->keywords(),
@@ -201,7 +201,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 				'name' => $page->name(),
 				'parent' => $page->parent(),
 				'slug' => $page->slug(),
-				'url' => $page->URL(),
+				'uri' => $page->URI(),
 				'title' => $page->title(),
 				'description' => $page->description(),
 				'keywords' => $page->keywords(),
@@ -232,7 +232,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 					'name' => $page_details['name'],
 					'parent' => $page_details['parent'],
 					'slug' => $page_details['slug'],
-					'url' => $page_details['url'],
+					'uri' => $page_details['uri'],
 					'title' => $page_details['title'],
 					'description' => $page_details['description'],
 					'keywords' => $page_details['keywords'],
@@ -304,14 +304,14 @@ class MonalPagesRepository extends Repository implements PagesRepository
 	}
 
 	/**
-	 * Retrieve a page from the repository by its URL.
+	 * Retrieve a page from the repository by its URI.
 	 *
 	 * @param	String
 	 * @return	Monal\Pages\Models\Page
 	 */
-	public function retrieveByURL($url)
+	public function retrieveByURI($uri)
 	{
-		if ($page = $this->query()->where('url', '=', $url)->first()) {
+		if ($page = $this->query()->where('uri', '=', $uri)->first()) {
 			return $this->decodeFromStorage($page);
 		}
 		return false;

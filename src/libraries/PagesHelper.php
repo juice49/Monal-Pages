@@ -25,7 +25,7 @@ class PagesHelper
 			$page_details = array(
 				'id' => $page->ID(),
 				'name' => $page->name(),
-				'url_segments' => explode('/', trim($page->URL(), '/')),
+				'uri_segments' => explode('/', trim($page->URI(), '/')),
 			);
 			array_push($pages, $page_details);
 		}
@@ -71,9 +71,9 @@ class PagesHelper
 		$pseudo_namespaces = array();
 		foreach ($pages as $page) {
 			if (is_null($parent_slug)) {
-				$slug = $page['url_segments'][$recursion_lvl];
+				$slug = $page['uri_segments'][$recursion_lvl];
 				$pseudo = $this->isPseudoSlug($slug, $recursion_lvl, $pages);
-				if (count($page['url_segments']) == 1) {
+				if (count($page['uri_segments']) == 1) {
 					array_push($tree, array(
 						'pseudo' => 0,
 						'id' => $page['id'],
@@ -91,9 +91,9 @@ class PagesHelper
 					}
 				}
 			} else {
-				if (count($page['url_segments']) == ($recursion_lvl + 1)) {
-					$slug = $page['url_segments'][$recursion_lvl];
-					if ($page['url_segments'][$recursion_lvl - 1] == $parent_slug) {
+				if (count($page['uri_segments']) == ($recursion_lvl + 1)) {
+					$slug = $page['uri_segments'][$recursion_lvl];
+					if ($page['uri_segments'][$recursion_lvl - 1] == $parent_slug) {
 						if ($pseudo = $this->isPseudoSlug($slug, $recursion_lvl, $pages)) {
 							$pseudo_namespaces[$slug] = $slug;
 							array_push($tree, array(
@@ -125,7 +125,7 @@ class PagesHelper
 	private function isPseudoSlug($slug, $segment, $pages)
 	{
 		foreach ($pages as $page) {
-			if (count($page['url_segments']) == ($segment + 1) AND $slug == $page['url_segments'][$segment]) {
+			if (count($page['uri_segments']) == ($segment + 1) AND $slug == $page['uri_segments'][$segment]) {
 				return false;
 			}
 		}

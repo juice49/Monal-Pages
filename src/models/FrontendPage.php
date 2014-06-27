@@ -26,6 +26,13 @@ interface FrontendPage
 	public function name();
 
 	/**
+	 * Return the pages's URI.
+	 *
+	 * @return	String
+	 */
+	public function URI();
+
+	/**
 	 * Return the pages's URL.
 	 *
 	 * @return	String

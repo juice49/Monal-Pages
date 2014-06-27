@@ -50,11 +50,11 @@ interface Page extends DataStreamEntry
 	public function slug();
 
 	/**
-	 * Return the pages's URL.
+	 * Return the pages's URI.
 	 *
 	 * @return	String
 	 */
-	public function URL();
+	public function URI();
 
 	/**
 	 * Return the pages's title.
@@ -132,12 +132,12 @@ interface Page extends DataStreamEntry
 	public function setSlug($slug);
 
 	/**
-	 * Set the pages URL
+	 * Set the pages URI
 	 *
 	 * @param	String
 	 * @return	Void
 	 */
-	public function setURL($url);
+	public function setURI($uri);
 
 	/**
 	 * Set the page's title
