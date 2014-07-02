@@ -223,7 +223,7 @@ class MonalPagesRepository extends Repository implements PagesRepository
 		$tree_branch = array();
 		foreach ($flat_page_map as $page_id => $page_details) {
 			if (
-				($parent_page_id === null AND $page_details['parent'] === 0) OR
+				($parent_page_id == null AND $page_details['parent'] == 0) OR
 				($parent_page_id AND $page_details['parent'] == $parent_page_id)
 			) {
 					array_push($tree_branch, array(
