@@ -111,6 +111,14 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 				}
 			}
 		});
+		
+		$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+		$loader->alias('PagesHelper', 'Monal\Pages\Facades\PagesHelper');
+		$loader->alias('PagesRepository', 'Monal\Pages\Facades\PagesRepository');
+		$loader->alias('PageTypesRepository', 'Monal\Pages\Facades\PageTypesRepository');
+		
+		require(__DIR__ . '/../../sitemap.php');
+		
 	}
 
 	/**
@@ -155,26 +163,15 @@ class PagesServiceProvider extends ServiceProvider implements MonalPackageServic
 		$this->app['pageshelper'] = $this->app->share(function ($app) {
 				return new \Monal\Pages\Libraries\PagesHelper;
 		});
-		$this->app->booting(function () {
-			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-			$loader->alias('PagesHelper', 'Monal\Pages\Facades\PagesHelper');
-		});
 
 		$this->app['pagesrepository'] = $this->app->share(function ($app) {
 				return \App::make('Monal\Pages\Repositories\PagesRepository');
-		});
-		$this->app->booting(function () {
-			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-			$loader->alias('PagesRepository', 'Monal\Pages\Facades\PagesRepository');
 		});
 
 		$this->app['pagetypesrepository'] = $this->app->share(function ($app) {
 				return \App::make('Monal\Pages\Repositories\PageTypesRepository');
 		});
-		$this->app->booting(function () {
-			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-			$loader->alias('PageTypesRepository', 'Monal\Pages\Facades\PageTypesRepository');
-		});
+
 	}
 
 	/**
