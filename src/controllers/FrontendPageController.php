@@ -27,6 +27,7 @@ class FrontendPagesController extends BaseController
 		$vars = array();
 		$vars['messages'] = $this->system->messages->merge(FlashMessages::all());
 		$vars['page'] = \App::make('Monal\Pages\Models\FrontendPage', $page);
+		$vars['input'] = Session::get('input');
 		
 		// For now, trim the extensions added to the db
 		$theme = $page->pageType()->template();
